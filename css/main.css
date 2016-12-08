@@ -1,0 +1,87 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    height: 100%;
+    box-sizing: border-box;
+}
+
+html{
+    height: 100%;
+}
+
+.content{
+    height: 100%;
+    width: 100%;
+    background: #1a91bc;
+    position: relative;
+}
+
+.background{
+    position: absolute;
+    left: 0;
+    top:0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.photoContainer{
+    position: absolute;
+    top:0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    text-align: center;
+    padding: 30px;
+    box-sizing: border-box;
+    background-color: rgba(0,0,0,0.8);
+    display: none;
+    z-index: 1000;
+}
+
+@-webkit-keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@-webkit-keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@-webkit-keyframes growIn {
+    from { width: 0; height: 0 ; position: absolute; left: 50%; top: 50%}
+    to { width: 100%; height: 100%; position: absolute; left: 0; top: 0}
+}
+
+canvas{
+    position: absolute;
+    z-index: 100;
+}
+.growIn{
+    -webkit-animation: growIn 1.5s;
+    animation: growIn 1.5s;
+}
+
+.fadeIn{
+    -webkit-animation: fadeIn 2s;
+    animation: fadeIn 2s;
+}
+.fadeOut{
+    -webkit-animation: fadeOut 2s;
+    animation: fadeOut 2s;
+}
+
+.futbolmatch{
+    background: #384456 url("./../assets/png/photos/fm-logo.svg") no-repeat;
+    background-size: contain;
+}
+.futbolmatch-slider{
+    visibility: hidden;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
