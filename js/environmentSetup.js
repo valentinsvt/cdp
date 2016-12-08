@@ -65,10 +65,74 @@ function addFutbolmatchAssets(){
     for ( var i = 0; i < futbolMatchCloudPositions.length ; i++) {
         var cloud = new Sprite(resources["./assets/png/Object/cloud.png"].texture);
         cloud.scale.set(0.2);
+        cloud.anchor.set(0.5);
         cloud.y = screenHeight - pathTiles[0].height  - cloud.height - 50;
         cloud.x = futbolMatchCloudPositions[i];
         cloud.slider = "futbolmatch-slider";
         clouds.push(cloud);
         world.addChild(cloud);
     }
+
+    lever = new Sprite(resources["./assets/png/Object/lever left2.png"].texture);
+    lever.scale.set(0.15);
+    lever.y = screenHeight - pathTiles[0].height  - (lever.height/2) + 10;
+    lever.x = 5000;
+    lever.anchor.set(0.5);
+    lever.active = false;
+    world.addChild(lever);
+
+
+    var scroll = new Sprite(resources["./assets/png/Object/scroll_yellow.png"].texture);
+    scroll.scale.set(0.4,0.4);
+    scroll.y = 0;
+    scroll.x = 0;
+
+    futbolMatchScroll = new Container();
+    futbolMatchScroll.x = 5000;
+    futbolMatchScroll.y = -scroll.height;
+
+    futbolMatchScroll.addChild(scroll);
+
+    var message = new PIXI.Text(
+        "- Este es un feedback muy \n muy bueno, lorem\n ipsum dolor sit amen",
+        {font: "18px sans-serif", fill: "black"}
+    );
+    message.x = 40;
+    message.y = 30;
+    futbolMatchScroll.addChild(message);
+
+    message = new PIXI.Text(
+        "- Este es un feedback muy \n muy bueno, lorem\n ipsum dolor sit amen",
+        {font: "18px sans-serif", fill: "black"}
+    );
+    message.x = 40;
+    message.y = 110;
+    futbolMatchScroll.addChild(message);
+
+    message = new PIXI.Text(
+        "- Este es un feedback muy \n muy bueno, lorem\n ipsum dolor sit amen",
+        {font: "18px sans-serif", fill: "black"}
+    );
+    message.x = 40;
+    message.y = 190;
+    futbolMatchScroll.addChild(message);
+
+    message = new PIXI.Text(
+        "- Este es un feedback muy \n muy bueno, lorem\n ipsum dolor sit amen",
+        {font: "18px sans-serif", fill: "black"}
+    );
+    message.x = 40;
+    message.y = 270;
+    futbolMatchScroll.addChild(message);
+
+    message = new PIXI.Text(
+        "- Este es un feedback muy \n muy bueno, lorem\n ipsum dolor sit amen",
+        {font: "18px sans-serif", fill: "black"}
+    );
+    message.x = 40;
+    message.y = 350;
+    futbolMatchScroll.addChild(message);
+
+    world.addChild(futbolMatchScroll);
+
 }

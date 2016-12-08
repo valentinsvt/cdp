@@ -47,3 +47,13 @@ function cloudsHitCollisions() {
     if(toDelete > -1)
         clouds.splice(toDelete,1);
 }
+
+function futbolMatchLeverHitCollision() {
+    if(hitTestRectangle(zombie, lever, world)){
+        if(!lever.active && zombie.state == "attacking"){
+            lever.scale.x = lever.scale.x * -1;
+            lever.x = lever.x + lever.width / 2;
+            lever.active = true;
+        }
+    }
+}

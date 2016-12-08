@@ -46,11 +46,14 @@
     var zombie;
     var idleFrames = [];
     var walkingFrames = [];
+    var attackingFrames = [];
     var pathTiles = [];
     var bushPositions = [0, 1290, 2400, 2600];
     var signPositions = [320];
+    var futbolMatchScroll;
     var books = [];
     var clouds = [];
+    var lever;
     var xScale = 0.2;
     var floorYPosition;
     var world;
@@ -82,12 +85,22 @@
         .add("./assets/png/male/Walk (8).png")
         .add("./assets/png/male/Walk (9).png")
         .add("./assets/png/male/Walk (10).png")
+        .add("./assets/png/male/Attack (1).png")
+        .add("./assets/png/male/Attack (2).png")
+        .add("./assets/png/male/Attack (3).png")
+        .add("./assets/png/male/Attack (4).png")
+        .add("./assets/png/male/Attack (5).png")
+        .add("./assets/png/male/Attack (6).png")
+        .add("./assets/png/male/Attack (7).png")
+        .add("./assets/png/male/Attack (8).png")
         .add("./assets/png/path/2.png")
         .add("./assets/png/path/5.png")
         .add("./assets/png/Object/Bush (1).png")
         .add("./assets/png/Object/Sign_2.png")
         .add("./assets/png/Object/building.png")
         .add("./assets/png/Object/cloud.png")
+        .add("./assets/png/Object/lever left2.png")
+        .add("./assets/png/Object/scroll_yellow.png")
         .add("./assets/png/books/book1.png")
         .add("./assets/png/books/book2.png")
         .add("./assets/png/books/book3.png")
@@ -119,6 +132,14 @@
         processCharacterMovement();
         booksHitCollisions();
         cloudsHitCollisions();
+        futbolMatchLeverHitCollision();
+        updateFutbolmatchScrollPosition();
+    }
+
+    function updateFutbolmatchScrollPosition() {
+        if(lever.active==true && futbolMatchScroll.y < 0){
+            futbolMatchScroll.y += 7;
+        }
     }
 
 
@@ -172,10 +193,17 @@
     function walkAnimation(direction){
         zombie.textures = walkingFrames;
         zombie.scale.x = xScale * direction;
+        zombie.state = "walking";
     }
 
     function idleAnimation() {
         zombie.textures = idleFrames;
+        zombie.state = "idle";
+    }
+
+    function attackingAnimation() {
+        zombie.textures = attackingFrames;
+        zombie.state = "attacking";
     }
 
     function setEnvironment() {
@@ -214,6 +242,10 @@
         for ( i = 1; i <= 10; i++) {
             walkingFrames.push(PIXI.Texture.fromFrame('./assets/png/male/Walk (' + i + ').png'));
         }
+
+        for ( i = 1; i <= 8; i++) {
+            attackingFrames.push(PIXI.Texture.fromFrame('./assets/png/male/Attack (' + i + ').png')); //504.5 450
+        }
     }
 
     function setKeyboardFunctions() {
@@ -223,7 +255,8 @@
             up = keyboard(38),
             down = keyboard(40),
             space = keyboard(32),
-            esc = keyboard(27);
+            esc = keyboard(27),
+            ctrl = keyboard(17);
 
         left.press = function() {
             walkAnimation(-1);
@@ -254,6 +287,22 @@
         space.press = function() {
             if(zombie.vy == 0)
                 zombie.vy = -10;
+        };
+
+        ctrl.press = function() {
+            attackingAnimation();
+        };
+
+        ctrl.release = function() {
+            if(zombie.vx == 0 && world.vx == 0) {
+                idleAnimation();
+            }else{
+                if(zombie.vx > 0 || world.vx < 0) {
+                    walkAnimation(1);
+                }else {
+                    walkAnimation(-1);
+                }
+            }
         };
 
         esc.release = function () {
