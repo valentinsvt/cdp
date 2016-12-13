@@ -1,9 +1,11 @@
 function loadPlayerAssets(){
+    var pad = "000";
     for(var i = 0; i < 12 ; i++){
         loader.add("./assets/png/character/Idle_"+(pad.substring(0, pad.length - i.toString().length) + i )+".png");
         if(i < 8){
             loader.add("./assets/png/character/Jump_00"+i+".png");
             loader.add("./assets/png/character/Throwing attack_00"+i+".png");
+            loader.add("./assets/png/character/Attack_00"+i+".png");
         }
         if(i<8){
             loader.add("./assets/png/character/Run_"+(pad.substring(0, pad.length - i.toString().length) + i )+".png");
@@ -21,12 +23,13 @@ function loadZombieAssets() {
 }
 
 function loadAnimationFrames() {
-
+    var pad = "000";
     for(var i = 0; i < 12 ; i++){
         idleFrames.push(PIXI.Texture.fromFrame("./assets/png/character/Idle_"+(pad.substring(0, pad.length - i.toString().length) + i )+".png"));
         if(i < 8){
             jumpFrames.push(PIXI.Texture.fromFrame("./assets/png/character/Jump_00"+i+".png"));
             attackingFrames.push(PIXI.Texture.fromFrame("./assets/png/character/Throwing attack_00"+i+".png"));
+            swordAttackingFrames.push(PIXI.Texture.fromFrame("./assets/png/character/Attack_00"+i+".png"));
         }
         if(i<8){
             walkingFrames.push(PIXI.Texture.fromFrame("./assets/png/character/Run_"+(pad.substring(0, pad.length - i.toString().length) + i )+".png"));
@@ -71,7 +74,7 @@ function addBooks() {
 
 function addPathTiles(){
 
-    for (var i = 0; i <= 80; i++) {
+    for (var i = 0; i <= 200; i++) {
         var pathTile = new Sprite(resources["./assets/png/path/2.png"].texture);
         pathTile.y = screenHeight - pathTile.height ;
         pathTile.x = pathTile.width * i;
@@ -132,11 +135,22 @@ function addFutbolmatchAssets(){
     scroll.y = 0;
     scroll.x = 0;
 
+    sword = new Sprite(resources["./assets/png/Object/sword.png"].texture);
+    sword.scale.set(0.1,0.1);
+    sword.anchor.set(0.5);
+    sword.y = -100;
+    sword.rotation = 1.5;
+    sword.x = 5500;
+    sword.attackIncrease = 10;
+
+
+
     futbolMatchScroll = new Container();
     futbolMatchScroll.x = 5000;
     futbolMatchScroll.y = -scroll.height;
 
     futbolMatchScroll.addChild(scroll);
+    world.addChild(sword);
 
     var message = new PIXI.Text(
         "- Este es un feedback muy \n muy bueno, lorem\n ipsum dolor sit amen",
@@ -180,6 +194,8 @@ function addFutbolmatchAssets(){
 
     world.addChild(futbolMatchScroll);
 
+
+
     zombie = new PIXI.extras.MovieClip(zombieIdleFrames);
 
     zombie.animationSpeed = 0.4;
@@ -187,7 +203,57 @@ function addFutbolmatchAssets(){
     zombie.play();
     zombie.scale.set(0.5 * -1, 0.5);
     zombie.position.set(6500, calculateFloorYPosition(zombie) - zombie.height);
-    zombie.lifePoints = 100;
-    world.addChild(zombie);
+    zombie.lifePoints = 500;
 
+    angular = new Sprite(resources["./assets/png/Object/angular.png"].texture);
+    angular.scale.set(0.1,0.1);
+    angular.anchor.set(0.5);
+    angular.visible = false;
+    angular.position.set(6500,  calculateFloorYPosition(angular) - angular.height);
+
+    agile = new Sprite(resources["./assets/png/Object/agile.png"].texture);
+    agile.scale.set(0.2,0.2);
+    agile.anchor.set(0.5);
+    agile.visible = false;
+    agile.position.set(6550,  calculateFloorYPosition(agile) - agile.height * 2);
+
+    ruby = new Sprite(resources["./assets/png/Object/ruby.png"].texture);
+    ruby.scale.set(0.05,0.05);
+    ruby.anchor.set(0.5);
+    ruby.visible = false;
+    ruby.position.set(6600,  calculateFloorYPosition(ruby) - ruby.height);
+
+    zombieLoot.push(angular);
+    zombieLoot.push(ruby);
+    zombieLoot.push(agile);
+
+    world.addChild(zombie);
+    world.addChild(angular);
+    world.addChild(agile);
+    world.addChild(ruby);
+
+}
+
+function addDjangoAssets() {
+    var djangoCloudPositions = 9000;
+    var cloud = new Sprite(resources["./assets/png/Object/cloud.png"].texture);
+    cloud.scale.set(0.2);
+    cloud.anchor.set(0.5);
+    cloud.y = screenHeight - pathTiles[0].height - cloud.height ;
+    cloud.x = djangoCloudPositions;
+    cloud.slider = "django-slider";
+    clouds.push(cloud);
+    world.addChild(cloud);
+}
+
+function addSeleneAssets() {
+    var djangoCloudPositions = 12000;
+    var cloud = new Sprite(resources["./assets/png/Object/cloud.png"].texture);
+    cloud.scale.set(0.2);
+    cloud.anchor.set(0.5);
+    cloud.y = screenHeight - pathTiles[0].height - cloud.height ;
+    cloud.x = djangoCloudPositions;
+    cloud.slider = "selene-slider";
+    clouds.push(cloud);
+    world.addChild(cloud);
 }

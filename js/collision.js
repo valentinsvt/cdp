@@ -7,6 +7,7 @@ function booksHitCollisions() {
             toDelete=i;
             xScale += 0.015;
             player.scale.set(xScale);
+            player.inventory.push(books[i]);
         }
     }
     if(toDelete > -1)
@@ -18,11 +19,12 @@ function cloudsHitCollisions() {
     var toDelete = -1;
     for(var i = 0; i < clouds.length ; i++ ){
         if(hitTestRectangle(player, clouds[i], world)){
+            $(".slider").hide();
             var sliderName = clouds[i].slider;
             clouds[i].visible = false;
             stage.removeChild(clouds[i]);
             toDelete=i;
-            $("."+sliderName).css({"visibility":"visible"});
+            $("."+sliderName).show();
             $(".photoContainer").show().addClass("growIn");
             setTimeout(function () {
                 $("."+sliderName).slidesjs({
@@ -58,10 +60,21 @@ function futbolMatchLeverHitCollision() {
     }
 }
 
+function futbolmatchSwordCollision() {
+    if(sword.visible && hitTestRectangle(player, sword, world)){
+            sword.visible = false;
+            player.inventory.push(sword);
+            player.attack += 10;
+            player.attackingFrames = swordAttackingFrames;
+            futbolMatchScroll.removeChild(sword);
+
+    }
+}
+
 function futbolMatchZombieHitCollision() {
     if(hitTestRectangle(player, zombie, world)){
         if(zombie.lifePoints > 0 && player.state == "attacking"){
-                zombie.lifePoints-=1;
+                zombie.lifePoints-=player.attack;
         }else{
             if(zombie.lifePoints == 0 && zombie.state != "dying"){
                 zombie.position.set(zombie.x + 30, calculateFloorYPosition(zombie) - zombie.height +25);
@@ -72,8 +85,25 @@ function futbolMatchZombieHitCollision() {
                 zombie.loop = false;
                 setTimeout(function () {
                     zombie.visible = false;
+                    angular.visible = true;
+                    ruby.visible = true;
+                    agile.visible = true;
                 },5000);
             }
         }
     }
+}
+
+function zombieLootHitCollision(){
+    var toDelete = -1;
+    for(var i = 0; i < zombieLoot.length ; i++ ){
+        if(zombieLoot[i].visible && hitTestRectangle(player, zombieLoot[i], world)){
+            zombieLoot[i].visible = false;
+            world.removeChild(zombieLoot[i]);
+            toDelete=i;
+            player.inventory.push(zombieLoot[i]);
+        }
+    }
+    if(toDelete > -1)
+        zombieLoot.splice(toDelete,1);
 }

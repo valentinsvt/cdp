@@ -79,8 +79,19 @@ canvas{
     background: #384456 url("./../assets/png/photos/fm-logo.svg") no-repeat;
     background-size: contain;
 }
-.futbolmatch-slider{
-    visibility: hidden;
+
+.django {
+    background-size: contain;
+    background: #F7941D url("./../assets/png/photos/django.jpg") no-repeat center;
+}
+
+.selene{
+    background-size: contain;
+    background: rgb(158, 24, 75) url("./../assets/png/photos/selene.png") no-repeat center;
+}
+
+.slider{
+    display: none;
     width: 100%;
     height: 100%;
     overflow: hidden;

@@ -9,6 +9,7 @@
             crossorigin="anonymous"></script>
     <script src="js/jquery.slides.min.js"></script>
     <script src="js/environmentSetup.js"></script>
+    <script src="js/zones.js"></script>
     <script src="js/collision.js"></script>
     <script src="js/keyboard.js"></script>
     <link rel="stylesheet" href="css/main.css">
@@ -22,6 +23,17 @@
             <img src="./assets/png/photos/futbolmatch3.jpg" height="100%">
             <img src="./assets/png/photos/futbolmatch4.jpg" height="100%">
             <img src="./assets/png/photos/futbolmatch5.jpg" height="100%">
+        </div>
+        <div class="django-slider slider">
+            <img src="./assets/png/photos/django1.jpg" height="100%" style="-webkit-transform: rotate(180deg)">
+            <img src="./assets/png/photos/django2.jpg" height="100%" style="-webkit-transform: rotate(180deg)">
+            <img src="./assets/png/photos/django3.jpg" height="100%">
+            <img src="./assets/png/photos/django4.jpg" height="100%">
+        </div>
+        <div class="selene-slider slider">
+            <img src="./assets/png/photos/selene1.jpg" height="100%">
+            <img src="./assets/png/photos/selene2.jpg" height="100%">
+            <img src="./assets/png/photos/selene3.jpg" height="100%">
         </div>
     </div>
 </div>
@@ -48,6 +60,7 @@
     var idleFrames = [];
     var walkingFrames = [];
     var attackingFrames = [];
+    var swordAttackingFrames = [];
     var zombieIdleFrames = [];
     var zombieDeadFrames = [];
     var jumpFrames = [];
@@ -58,6 +71,8 @@
     var books = [];
     var clouds = [];
     var lever;
+    var sword;
+    var angular, ruby, agile, zombieLoot=[];
     var xScale = 0.2;
     var world;
 
@@ -68,7 +83,6 @@
         ctrl = keyboard(17);
 
     contentDiv.append(renderer.view);
-    var pad = "000";
     loadPlayerAssets();
     loadZombieAssets();
 
@@ -87,6 +101,10 @@
         .add("./assets/png/books/book4.png")
         .add("./assets/png/books/book5.png")
         .add("./assets/png/books/book6.png")
+        .add("./assets/png/Object/sword.png")
+        .add("./assets/png/Object/angular.png")
+        .add("./assets/png/Object/ruby.png")
+        .add("./assets/png/Object/agile.png")
         .load(setup);
 
     function setup() {
@@ -115,11 +133,16 @@
         futbolMatchLeverHitCollision();
         updateFutbolmatchScrollPosition();
         futbolMatchZombieHitCollision();
+        futbolmatchSwordCollision();
+        zombieLootHitCollision();
     }
 
     function updateFutbolmatchScrollPosition() {
         if(lever.active==true && futbolMatchScroll.y < -10){
             futbolMatchScroll.y += 7;
+        }
+        if(lever.active==true && sword.y < screenHeight - (pathTiles[0].height + 30)){
+                sword.y += 10;
         }
     }
 
@@ -151,6 +174,8 @@
         player.y += player.vy;
         world.x += world.vx;
         testFutbolmatchZone();
+        testDjangoZone();
+        testSeleneZone();
         if(!player.playing && player.vy > 0){
             if(!right.isDown && !left.isDown) {
                 idleAnimation();
@@ -162,23 +187,6 @@
         }
 
     }
-
-    function testFutbolmatchZone(){
-        if(world.x < -3500 + player.x && world.x > -7000 + player.x) {
-            if(!backgroundDiv.hasClass("futbolmatch")){
-                backgroundDiv.addClass("futbolmatch").addClass("fadeIn").removeClass("fadeOut");
-            }
-        }else {
-            if(backgroundDiv.hasClass("futbolmatch")) {
-                backgroundDiv.addClass("fadeOut").removeClass("fadeIn");
-                setTimeout(function () {
-                    backgroundDiv.removeClass("futbolmatch")
-                },1990)
-            }
-        }
-    }
-
-
 
     function setEnvironment() {
         world = new Container();
@@ -192,6 +200,8 @@
         addBuildings();
         addBooks();
         addFutbolmatchAssets();
+        addDjangoAssets();
+        addSeleneAssets();
 
         stage.addChild(world);
 
@@ -203,6 +213,9 @@
         player.scale.set(xScale);
         player.vx = 0;
         player.vy = 0;
+        player.attack = 0;
+        player.inventory = [];
+        player.attackingFrames = attackingFrames;
         player.position.set(screenWidth * 0.2, calculateFloorYPosition(player) );
 
         stage.addChild(player);
@@ -266,7 +279,7 @@
 
         esc.release = function () {
             $(".photoContainer").hide();
-            $(".slider").css({"visibility": "hidden"});
+            $(".slider").hide();
         }
     }
 
@@ -287,7 +300,7 @@
 
     function attackAnimation() {
         if(player.state != "attacking") {
-            player.textures = attackingFrames;
+            player.textures = player.attackingFrames;
             player.state = "attacking";
         }
     }
