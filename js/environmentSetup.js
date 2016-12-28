@@ -22,6 +22,13 @@ function loadZombieAssets() {
     }
 }
 
+function loadDisketteAssets() {
+    for(var i = 0; i < 16 ; i++) {
+        loader.add("./assets/png/dk/diskette_" + i + ".png");
+        loader.add("./assets/png/dk_green/diskette_" + i + ".png");
+    }
+}
+
 function loadAnimationFrames() {
     var pad = "000";
     for(var i = 0; i < 12 ; i++){
@@ -43,6 +50,13 @@ function loadZombieAnimationFrames() {
         if (i <= 12) {
             zombieDeadFrames.push(PIXI.Texture.fromFrame("./assets/png/zombie/Dead (" + i + ").png"));
         }
+    }
+}
+
+function loadDisketteAnimationFrames (){
+    for(var i = 0; i < 16 ; i++) {
+        disketteFrames.push(PIXI.Texture.fromFrame("./assets/png/dk/diskette_" + i + ".png"));
+        greenDisketteFrames.push(PIXI.Texture.fromFrame("./assets/png/dk_green/diskette_" + i + ".png"));
     }
 }
 
@@ -108,15 +122,22 @@ function addSigns() {
     }
 }
 
+function createMemoryAsset(frames, Xpostition, sliderClass){
+    var cloud = new PIXI.extras.MovieClip(frames);
+    cloud.animationSpeed = 0.6;
+    cloud.play();
+    cloud.scale.set(0.15);
+    cloud.anchor.set(0.5);
+    cloud.y = screenHeight - pathTiles[0].height  - cloud.height - 50;
+    cloud.x = Xpostition;
+    cloud.slider = sliderClass;
+    return cloud;
+}
+
 function addFutbolmatchAssets(){
     var futbolMatchCloudPositions = [4500];
     for ( var i = 0; i < futbolMatchCloudPositions.length ; i++) {
-        var cloud = new Sprite(resources["./assets/png/Object/cloud.png"].texture);
-        cloud.scale.set(0.2);
-        cloud.anchor.set(0.5);
-        cloud.y = screenHeight - pathTiles[0].height  - cloud.height - 50;
-        cloud.x = futbolMatchCloudPositions[i];
-        cloud.slider = "futbolmatch-slider";
+        var cloud =  createMemoryAsset(greenDisketteFrames, futbolMatchCloudPositions[i], "futbolmatch-slider");
         clouds.push(cloud);
         world.addChild(cloud);
     }
@@ -236,24 +257,14 @@ function addFutbolmatchAssets(){
 
 function addDjangoAssets() {
     var djangoCloudPositions = 9000;
-    var cloud = new Sprite(resources["./assets/png/Object/cloud.png"].texture);
-    cloud.scale.set(0.2);
-    cloud.anchor.set(0.5);
-    cloud.y = screenHeight - pathTiles[0].height - cloud.height ;
-    cloud.x = djangoCloudPositions;
-    cloud.slider = "django-slider";
+    var cloud =  createMemoryAsset(disketteFrames, djangoCloudPositions, "django-slider");
     clouds.push(cloud);
     world.addChild(cloud);
 }
 
 function addSeleneAssets() {
-    var djangoCloudPositions = 12000;
-    var cloud = new Sprite(resources["./assets/png/Object/cloud.png"].texture);
-    cloud.scale.set(0.2);
-    cloud.anchor.set(0.5);
-    cloud.y = screenHeight - pathTiles[0].height - cloud.height ;
-    cloud.x = djangoCloudPositions;
-    cloud.slider = "selene-slider";
+    var seleneCloudPositions = 11000;
+    var cloud =  createMemoryAsset(disketteFrames, seleneCloudPositions, "selene-slider");
     clouds.push(cloud);
     world.addChild(cloud);
 }

@@ -63,6 +63,8 @@
     var swordAttackingFrames = [];
     var zombieIdleFrames = [];
     var zombieDeadFrames = [];
+    var greenDisketteFrames = [];
+    var disketteFrames = [];
     var jumpFrames = [];
     var pathTiles = [];
     var bushPositions = [0, 1290, 2400, 2600];
@@ -85,7 +87,7 @@
     contentDiv.append(renderer.view);
     loadPlayerAssets();
     loadZombieAssets();
-
+    loadDisketteAssets();
 
     loader.add("./assets/png/path/2.png")
         .add("./assets/png/path/5.png")
@@ -176,6 +178,8 @@
         testFutbolmatchZone();
         testDjangoZone();
         testSeleneZone();
+        testLatamZone();
+        testConquitoZone();
         if(!player.playing && player.vy > 0){
             if(!right.isDown && !left.isDown) {
                 idleAnimation();
@@ -191,7 +195,7 @@
     function setEnvironment() {
         world = new Container();
         world.vx = 0;
-
+        loadDisketteAnimationFrames();
         loadAnimationFrames();
         loadZombieAnimationFrames();
         addPathTiles();

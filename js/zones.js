@@ -14,7 +14,7 @@ function testFutbolmatchZone(){
 }
 
 function testDjangoZone(){
-    if(world.x < -8000 + player.x && world.x > -10000 + player.x) {
+    if(world.x < -8000 + player.x && world.x > -9000 + player.x) {
         if(!backgroundDiv.hasClass("django")){
             backgroundDiv.addClass("django").addClass("fadeIn").removeClass("fadeOut");
         }
@@ -29,7 +29,7 @@ function testDjangoZone(){
 }
 
 function testSeleneZone(){
-    if(world.x < -11000 + player.x && world.x > -13000 + player.x) {
+    if(world.x < -10000 + player.x && world.x > -11500 + player.x) {
         if(!backgroundDiv.hasClass("selene")){
             backgroundDiv.addClass("selene").addClass("fadeIn").removeClass("fadeOut");
         }
@@ -38,6 +38,36 @@ function testSeleneZone(){
             backgroundDiv.addClass("fadeOut").removeClass("fadeIn");
             setTimeout(function () {
                 backgroundDiv.removeClass("selene")
+            },1990)
+        }
+    }
+}
+
+function testConquitoZone(){
+    if(world.x < -12500 + player.x && world.x > -13500 + player.x) {
+        if(!backgroundDiv.hasClass("conquito")){
+            backgroundDiv.addClass("conquito").addClass("fadeIn").removeClass("fadeOut");
+        }
+    }else {
+        if(backgroundDiv.hasClass("conquito")) {
+            backgroundDiv.addClass("fadeOut").removeClass("fadeIn");
+            setTimeout(function () {
+                backgroundDiv.removeClass("conquito")
+            },1990)
+        }
+    }
+}
+
+function testLatamZone(){
+    if(world.x < -14500 + player.x && world.x > -17500 + player.x) {
+        if(!backgroundDiv.hasClass("latam")){
+            backgroundDiv.addClass("latam").addClass("fadeIn").removeClass("fadeOut");
+        }
+    }else {
+        if(backgroundDiv.hasClass("latam")) {
+            backgroundDiv.addClass("fadeOut").removeClass("fadeIn");
+            setTimeout(function () {
+                backgroundDiv.removeClass("latam")
             },1990)
         }
     }
