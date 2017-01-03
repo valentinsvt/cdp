@@ -6,9 +6,10 @@ function loadPlayerAssets(){
             loader.add("./assets/png/character/Jump_00"+i+".png");
             loader.add("./assets/png/character/Throwing attack_00"+i+".png");
             loader.add("./assets/png/character/Attack_00"+i+".png");
-        }
-        if(i<8){
             loader.add("./assets/png/character/Run_"+(pad.substring(0, pad.length - i.toString().length) + i )+".png");
+        }
+        if(i<4){
+            loader.add("./assets/png/character/Shot_"+(pad.substring(0, pad.length - i.toString().length) + i )+".png");
         }
     }
 }
@@ -28,6 +29,11 @@ function loadDisketteAssets() {
         loader.add("./assets/png/dk_green/diskette_" + i + ".png");
     }
 }
+function loadPlaneAssets() {
+    for(var i = 0; i < 19 ; i++) {
+        loader.add("./assets/png/plane/plane_" + i + ".png");
+    }
+}
 
 function loadAnimationFrames() {
     var pad = "000";
@@ -37,9 +43,10 @@ function loadAnimationFrames() {
             jumpFrames.push(PIXI.Texture.fromFrame("./assets/png/character/Jump_00"+i+".png"));
             attackingFrames.push(PIXI.Texture.fromFrame("./assets/png/character/Throwing attack_00"+i+".png"));
             swordAttackingFrames.push(PIXI.Texture.fromFrame("./assets/png/character/Attack_00"+i+".png"));
-        }
-        if(i<8){
             walkingFrames.push(PIXI.Texture.fromFrame("./assets/png/character/Run_"+(pad.substring(0, pad.length - i.toString().length) + i )+".png"));
+        }
+        if(i<4){
+            gunAttackingFrames.push(PIXI.Texture.fromFrame("./assets/png/character/Shot_00"+i+".png"));
         }
     }
 }
@@ -57,6 +64,12 @@ function loadDisketteAnimationFrames (){
     for(var i = 0; i < 16 ; i++) {
         disketteFrames.push(PIXI.Texture.fromFrame("./assets/png/dk/diskette_" + i + ".png"));
         greenDisketteFrames.push(PIXI.Texture.fromFrame("./assets/png/dk_green/diskette_" + i + ".png"));
+    }
+}
+
+function loadPlaneAnimationFrames (){
+    for(var i = 0; i < 19 ; i++) {
+        planeFrames.push(PIXI.Texture.fromFrame("./assets/png/plane/plane_" + i + ".png"));
     }
 }
 
@@ -230,23 +243,29 @@ function addFutbolmatchAssets(){
     angular.scale.set(0.1,0.1);
     angular.anchor.set(0.5);
     angular.visible = false;
+    angular.vy = 0;
     angular.position.set(6500,  calculateFloorYPosition(angular) - angular.height);
 
     agile = new Sprite(resources["./assets/png/Object/agile.png"].texture);
     agile.scale.set(0.2,0.2);
     agile.anchor.set(0.5);
     agile.visible = false;
+    agile.vy = 0;
     agile.position.set(6550,  calculateFloorYPosition(agile) - agile.height * 2);
 
     ruby = new Sprite(resources["./assets/png/Object/ruby.png"].texture);
     ruby.scale.set(0.05,0.05);
     ruby.anchor.set(0.5);
     ruby.visible = false;
+    ruby.vy = 0;
     ruby.position.set(6600,  calculateFloorYPosition(ruby) - ruby.height);
 
     zombieLoot.push(angular);
     zombieLoot.push(ruby);
     zombieLoot.push(agile);
+    lootableAssets.push(angular);
+    lootableAssets.push(ruby);
+    lootableAssets.push(agile);
 
     world.addChild(zombie);
     world.addChild(angular);
@@ -256,15 +275,213 @@ function addFutbolmatchAssets(){
 }
 
 function addDjangoAssets() {
-    var djangoCloudPositions = 9000;
+    var djangoCloudPositions = 8800;
     var cloud =  createMemoryAsset(disketteFrames, djangoCloudPositions, "django-slider");
     clouds.push(cloud);
     world.addChild(cloud);
 }
 
 function addSeleneAssets() {
-    var seleneCloudPositions = 11000;
+    var seleneCloudPositions = 10500;
     var cloud =  createMemoryAsset(disketteFrames, seleneCloudPositions, "selene-slider");
     clouds.push(cloud);
     world.addChild(cloud);
+
+    var chest = new Sprite(resources["./assets/png/Object/treasure.png"].texture);
+    chest.scale.set(0.25,0.25);
+    chest.anchor.set(0.5);
+    chest.position.set(11000,  calculateFloorYPosition(chest) - chest.height);
+    chests.push(chest);
+    chest.loot = [];
+    world.addChild(chest);
+
+    python = new Sprite(resources["./assets/png/Object/python.png"].texture);
+    python.scale.set(0.2,0.2);
+    python.anchor.set(0.5);
+    python.vy = 0;
+    python.vx = 0;
+    python.visible = false;
+    python.floorPosition = calculateFloorYPosition(python) - (python.height + 20);
+    python.position.set(11000, python.floorPosition);
+    python.direction = -3;
+
+    react = new Sprite(resources["./assets/png/Object/react-logo.png"].texture);
+    react.scale.set(0.2,0.2);
+    react.anchor.set(0.5);
+    react.visible = false;
+    react.vy = 0;
+    react.vx = 0;
+    react.floorPosition = calculateFloorYPosition(react) - (react.height + 20);
+    react.position.set(11000, react.floorPosition);
+    react.direction = 3;
+
+    world.addChild(python);
+    world.addChild(react);
+    movableAssets.push(python);
+    movableAssets.push(react);
+    lootableAssets.push(python);
+    lootableAssets.push(react);
+    chest.loot.push(python);
+    chest.loot.push(react);
+
+}
+
+function addConQuitoAssets() {
+    var conquitoCloudPosition = 12800;
+    var cloud =  createMemoryAsset(disketteFrames, conquitoCloudPosition, "conquito-slider");
+    var bulbasor = new Sprite(resources["./assets/png/Object/bulbasour.png"].texture);
+    bulbasor.scale.set(0.1,0.1);
+    bulbasor.anchor.set(0.5);
+    bulbasor.position.set(13300, calculateFloorYPosition(bulbasor) - bulbasor.height);
+    bulbasor.active  = false;
+    bulbasor.action = function () {
+        this.active = true;
+        window.open("http://localhost:8090/#/battle/1/25");
+    };
+    bulbasor.remove = false;
+    actionableAssets.push(bulbasor);
+    world.addChild(bulbasor);
+
+    clouds.push(cloud);
+    world.addChild(cloud);
+}
+
+function addLatamAssets() {
+    var plane = new PIXI.extras.MovieClip(planeFrames);
+
+    plane.animationSpeed = 0.15;
+    plane.anchor.set(0.5);
+    plane.play();
+    plane.scale.set(0.5 * -1, 0.5);
+    plane.position.set(15000, calculateFloorYPosition(plane) - plane.height);
+    plane.active  = false;
+    plane.action = function () {
+        this.active = true;
+        window.open("http://localhost:8080");
+    };
+    plane.remove = false;
+    actionableAssets.push(plane);
+    world.addChild(plane);
+
+    var scroll = new Sprite(resources["./assets/png/Object/scroll_yellow.png"].texture);
+    scroll.scale.set(0.4,0.4);
+    scroll.y = 0;
+    scroll.x = 0;
+
+    var gun = new Sprite(resources["./assets/png/Object/gun.png"].texture);
+    gun.scale.set(0.25,0.25);
+    gun.y = -100;
+    gun.x = 16400;
+    gun.vx = 0;
+    gun.vy = 0;
+    gun.floorPosition =  calculateFloorYPosition(gun) - gun.height * 2;
+    gun.anchor.set(0.5);
+    gun.action = function () {
+        player.attackingFrames = gunAttackingFrames;
+    };
+    gun.active = false;
+    movableAssets.push(gun);
+    lootableAssets.push(gun);
+    world.addChild(gun);
+
+    var latamScroll = new Container();
+    latamScroll.x = 16000;
+    latamScroll.y = -scroll.height;
+    latamScroll.vy=0;
+    latamScroll.vx=0;
+    latamScroll.floorPosition = -20;
+
+    latamScroll.addChild(scroll);
+    world.addChild(sword);
+
+    var message = new PIXI.Text(
+        "- Este es un feedback muy \n muy bueno, lorem\n ipsum dolor sit amen",
+        {font: "18px sans-serif", fill: "black"}
+    );
+    message.x = 40;
+    message.y = 30;
+    latamScroll.addChild(message);
+
+    message = new PIXI.Text(
+        "- Este es un feedback muy \n muy bueno, lorem\n ipsum dolor sit amen",
+        {font: "18px sans-serif", fill: "black"}
+    );
+    message.x = 40;
+    message.y = 110;
+    latamScroll.addChild(message);
+
+    message = new PIXI.Text(
+        "- Este es un feedback muy \n muy bueno, lorem\n ipsum dolor sit amen",
+        {font: "18px sans-serif", fill: "black"}
+    );
+    message.x = 40;
+    message.y = 190;
+    latamScroll.addChild(message);
+
+    message = new PIXI.Text(
+        "- Este es un feedback muy \n muy bueno, lorem\n ipsum dolor sit amen",
+        {font: "18px sans-serif", fill: "black"}
+    );
+    message.x = 40;
+    message.y = 270;
+    latamScroll.addChild(message);
+
+    message = new PIXI.Text(
+        "- Este es un feedback muy \n muy bueno, lorem\n ipsum dolor sit amen",
+        {font: "18px sans-serif", fill: "black"}
+    );
+    message.x = 40;
+    message.y = 350;
+    latamScroll.addChild(message);
+
+    movableAssets.push(latamScroll);
+
+    world.addChild(latamScroll);
+
+    var lever = new Sprite(resources["./assets/png/Object/lever left2.png"].texture);
+    lever.scale.set(0.15);
+    lever.y = screenHeight - pathTiles[0].height  - (lever.height/2) + 10;
+    lever.x = 15800;
+    lever.anchor.set(0.5);
+    lever.active = false;
+    lever.action = function () {
+        if(hitTestRectangle(player, this, world) && !this.active && player.state == "attacking"){
+                this.scale.x = this.scale.x * -1;
+                this.x = this.x + this.width / 2;
+                this.active = true;
+                latamScroll.vy = 7;
+                gun.vy = 7;
+        }
+    };
+    lever.remove = false;
+    actionableAssets.push(lever);
+    world.addChild(lever);
+
+    var chest = new Sprite(resources["./assets/png/Object/treasure.png"].texture);
+    chest.scale.set(0.25,0.25);
+    chest.anchor.set(0.5);
+    chest.position.set(17000,  calculateFloorYPosition(chest) - chest.height);
+    chests.push(chest);
+    chest.loot = [];
+    world.addChild(chest);
+
+    var bubbleItem = new Sprite(resources["./assets/png/Object/bubble.png"].texture);
+    bubbleItem.scale.set(0.03,0.03);
+    bubbleItem.anchor.set(0.5);
+    bubbleItem.vy = 0;
+    bubbleItem.vx = 0;
+    bubbleItem.visible = false;
+    bubbleItem.floorPosition = calculateFloorYPosition(bubbleItem) - (bubbleItem.height + 20);
+    bubbleItem.position.set(17000, bubbleItem.floorPosition);
+    bubbleItem.direction = -3;
+    bubbleItem.action = function () {
+        bubble.visible = true;
+    };
+
+
+    world.addChild(bubbleItem);
+    movableAssets.push(bubbleItem);
+    lootableAssets.push(bubbleItem);
+    chest.loot.push(bubbleItem);
+
 }

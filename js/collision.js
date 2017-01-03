@@ -62,11 +62,11 @@ function futbolMatchLeverHitCollision() {
 
 function futbolmatchSwordCollision() {
     if(sword.visible && hitTestRectangle(player, sword, world)){
-            sword.visible = false;
-            player.inventory.push(sword);
-            player.attack += 10;
-            player.attackingFrames = swordAttackingFrames;
-            futbolMatchScroll.removeChild(sword);
+        sword.visible = false;
+        player.inventory.push(sword);
+        player.attack += 10;
+        player.attackingFrames = swordAttackingFrames;
+        futbolMatchScroll.removeChild(sword);
 
     }
 }
@@ -74,7 +74,7 @@ function futbolmatchSwordCollision() {
 function futbolMatchZombieHitCollision() {
     if(hitTestRectangle(player, zombie, world)){
         if(zombie.lifePoints > 0 && player.state == "attacking"){
-                zombie.lifePoints-=player.attack;
+            zombie.lifePoints-=player.attack;
         }else{
             if(zombie.lifePoints == 0 && zombie.state != "dying"){
                 zombie.position.set(zombie.x + 30, calculateFloorYPosition(zombie) - zombie.height +25);
@@ -94,16 +94,51 @@ function futbolMatchZombieHitCollision() {
     }
 }
 
-function zombieLootHitCollision(){
+function lootHitCollision(){
     var toDelete = -1;
-    for(var i = 0; i < zombieLoot.length ; i++ ){
-        if(zombieLoot[i].visible && hitTestRectangle(player, zombieLoot[i], world)){
-            zombieLoot[i].visible = false;
-            world.removeChild(zombieLoot[i]);
+    for(var i = 0; i < lootableAssets.length ; i++ ){
+        if(lootableAssets[i].visible && hitTestRectangle(player, lootableAssets[i], world) && lootableAssets[i].vy==0){
+            lootableAssets[i].visible = false;
+            if(lootableAssets[i].action){
+                lootableAssets[i].action();
+            }
+            world.removeChild(lootableAssets[i]);
             toDelete=i;
-            player.inventory.push(zombieLoot[i]);
+            player.inventory.push(lootableAssets[i]);
         }
     }
     if(toDelete > -1)
-        zombieLoot.splice(toDelete,1);
+        lootableAssets.splice(toDelete,1);
+}
+
+function actionableAssetsHitCollision(){
+    actionableAssets.map(function (asset) {
+        if(asset.visible && !asset.active && player.state=="attacking" && hitTestRectangle(player, asset, world)){
+            asset.action();
+        }
+    });
+
+}
+
+
+function chestsCollision() {
+    var toDelete = -1;
+    for(var i = 0; i < chests.length ; i++ ){
+        if(hitTestRectangle(player, chests[i], world)){
+            if(player.state == "attacking"){
+                toDelete=i;
+                chests[i].visible = false;
+                chests[i].loot.map(function (lootItem) {
+                    lootItem.visible = true;
+                    lootItem.vy = -11;
+                    lootItem.vx = lootItem.direction;
+                });
+
+            }
+        }
+    }
+    if(toDelete > -1) {
+        world.removeChild(chests[toDelete]);
+        chests.splice(toDelete, 1);
+    }
 }

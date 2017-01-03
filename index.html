@@ -35,6 +35,13 @@
             <img src="./assets/png/photos/selene2.jpg" height="100%">
             <img src="./assets/png/photos/selene3.jpg" height="100%">
         </div>
+        <div class="conquito-slider slider">
+            <img src="./assets/png/photos/conquito1.jpg" height="100%" style="-webkit-transform: rotate(180deg)">
+            <img src="./assets/png/photos/conquito2.jpg" height="100%" style="-webkit-transform: rotate(180deg)">
+            <img src="./assets/png/photos/conquito3.jpg" height="100%" style="-webkit-transform: rotate(180deg)">
+            <img src="./assets/png/photos/conquito4.jpg" height="100%" style="-webkit-transform: rotate(180deg)">
+            <img src="./assets/png/photos/conquito5.jpg" height="100%">
+        </div>
     </div>
 </div>
 
@@ -56,15 +63,22 @@
     var screenHeight = contentDiv.height()-4;
     var renderer = autoDetectRenderer(screenWidth, screenHeight,{ transparent: true });
     var player;
+    var bubble;
     var zombie;
     var idleFrames = [];
     var walkingFrames = [];
     var attackingFrames = [];
     var swordAttackingFrames = [];
+    var gunAttackingFrames = [];
     var zombieIdleFrames = [];
     var zombieDeadFrames = [];
     var greenDisketteFrames = [];
+    var planeFrames = [];
     var disketteFrames = [];
+    var movableAssets = [];
+    var actionableAssets = [];
+    var lootableAssets = [];
+    var bullets = [];
     var jumpFrames = [];
     var pathTiles = [];
     var bushPositions = [0, 1290, 2400, 2600];
@@ -72,9 +86,11 @@
     var futbolMatchScroll;
     var books = [];
     var clouds = [];
+    var chests = [];
     var lever;
     var sword;
     var angular, ruby, agile, zombieLoot=[];
+    var python , react, seleneChestLoot=[];
     var xScale = 0.2;
     var world;
 
@@ -88,6 +104,7 @@
     loadPlayerAssets();
     loadZombieAssets();
     loadDisketteAssets();
+    loadPlaneAssets();
 
     loader.add("./assets/png/path/2.png")
         .add("./assets/png/path/5.png")
@@ -107,6 +124,13 @@
         .add("./assets/png/Object/angular.png")
         .add("./assets/png/Object/ruby.png")
         .add("./assets/png/Object/agile.png")
+        .add("./assets/png/Object/treasure.png")
+        .add("./assets/png/Object/python.png")
+        .add("./assets/png/Object/react-logo.png")
+        .add("./assets/png/Object/bulbasour.png")
+        .add("./assets/png/Object/gun.png")
+        .add("./assets/png/Object/bullet.png")
+        .add("./assets/png/Object/bubble.png")
         .load(setup);
 
     function setup() {
@@ -136,7 +160,9 @@
         updateFutbolmatchScrollPosition();
         futbolMatchZombieHitCollision();
         futbolmatchSwordCollision();
-        zombieLootHitCollision();
+        lootHitCollision();
+        chestsCollision();
+        actionableAssetsHitCollision();
     }
 
     function updateFutbolmatchScrollPosition() {
@@ -174,6 +200,8 @@
 
         player.x += player.vx;
         player.y += player.vy;
+        bubble.x = player.x;
+        bubble.y = player.y;
         world.x += world.vx;
         testFutbolmatchZone();
         testDjangoZone();
@@ -190,6 +218,26 @@
             player.play();
         }
 
+        bullets.map(function (bullet) {
+            if(bullet.visible){
+                bullet.x += bullet.vx;
+            }
+            if(bullet.x > screenWidth + 100 || bullet.x < -100){
+                bullet.visible = false;
+            }
+        });
+
+        movableAssets.map(function (asset) {
+           if(asset.vy != 0 || asset.vx != 0){
+               asset.y += asset.vy;
+               asset.x += asset.vx;
+               asset.vy += 0.4;
+               if(asset.y > asset.floorPosition) {
+                   asset.vy = 0;
+                   asset.vx = 0;
+               }
+           }
+        });
     }
 
     function setEnvironment() {
@@ -198,6 +246,7 @@
         loadDisketteAnimationFrames();
         loadAnimationFrames();
         loadZombieAnimationFrames();
+        loadPlaneAnimationFrames();
         addPathTiles();
         addBushes();
         addSigns();
@@ -206,6 +255,8 @@
         addFutbolmatchAssets();
         addDjangoAssets();
         addSeleneAssets();
+        addConQuitoAssets();
+        addLatamAssets();
 
         stage.addChild(world);
 
@@ -222,7 +273,17 @@
         player.attackingFrames = attackingFrames;
         player.position.set(screenWidth * 0.2, calculateFloorYPosition(player) );
 
+        bubble = new Sprite(resources["./assets/png/Object/bubble.png"].texture);
+        bubble.scale.set(0.12);
+        bubble.anchor.set(0.5);
+        bubble.vx = 0;
+        bubble.vy = 0;
+        bubble.x = player.x;
+        bubble.y = player.y - player.height;
+        bubble.visible = false;
+
         stage.addChild(player);
+        stage.addChild(bubble);
     }
 
     function setWalkingAnimation() {
@@ -241,6 +302,7 @@
             if (!right.isDown) {
                 walkAnimation(-1);
                 player.vx = -5;
+                player.facing = "left";
             }
         };
 
@@ -254,6 +316,7 @@
             if (!left.isDown) {
                 walkAnimation(1);
                 player.vx = 5;
+                player.facing = "right";
             }
         };
         right.release = function() {
@@ -306,6 +369,22 @@
         if(player.state != "attacking") {
             player.textures = player.attackingFrames;
             player.state = "attacking";
+            if(player.textures == gunAttackingFrames){
+                var bullet =  new Sprite(resources["./assets/png/Object/bullet.png"].texture);
+                bullet.anchor.set(0.5);
+                bullet.scale.set(0.08);
+                bullet.y = player.y + player.height / 5;
+                bullets.push(bullet);
+                if(player.facing == "right"){
+                    bullet.vx = 10;
+                    bullet.x = player.x + player.width / 2;
+                }else{
+                    bullet.scale.x = -0.08;
+                    bullet.vx = -10;
+                    bullet.x = player.x - player.width / 2;
+                }
+                stage.addChild(bullet);
+            }
         }
     }
 
