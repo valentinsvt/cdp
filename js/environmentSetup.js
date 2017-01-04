@@ -23,6 +23,15 @@ function loadZombieAssets() {
     }
 }
 
+function loadDeathAssets() {
+    for(var i = 0; i < 15 ; i++) {
+        loader.add("./assets/png/dragons/death/animation/idle/idle_"+ i +".png");
+        if(i < 9){
+            loader.add("./assets/png/dragons/death/animation/attack1/death-attack1_"+ i +".png");
+        }
+    }
+}
+
 function loadDisketteAssets() {
     for(var i = 0; i < 16 ; i++) {
         loader.add("./assets/png/dk/diskette_" + i + ".png");
@@ -56,6 +65,16 @@ function loadZombieAnimationFrames() {
         zombieIdleFrames.push(PIXI.Texture.fromFrame("./assets/png/zombie/Idle (" + i + ").png"));
         if (i <= 12) {
             zombieDeadFrames.push(PIXI.Texture.fromFrame("./assets/png/zombie/Dead (" + i + ").png"));
+        }
+    }
+}
+
+function loadDeathAnimationFrames() {
+    for(var i = 0; i < 15 ; i++) {
+        deathIdleFrames.push(PIXI.Texture.fromFrame("./assets/png/dragons/death/animation/idle/idle_"+ i +".png"));
+        if (i < 9) {
+            deathAttackFrames.push(PIXI.Texture.fromFrame("./assets/png/dragons/death/animation/attack1/death-attack1_"+ i +".png"));
+
         }
     }
 }
@@ -446,11 +465,11 @@ function addLatamAssets() {
     lever.active = false;
     lever.action = function () {
         if(hitTestRectangle(player, this, world) && !this.active && player.state == "attacking"){
-                this.scale.x = this.scale.x * -1;
-                this.x = this.x + this.width / 2;
-                this.active = true;
-                latamScroll.vy = 7;
-                gun.vy = 7;
+            this.scale.x = this.scale.x * -1;
+            this.x = this.x + this.width / 2;
+            this.active = true;
+            latamScroll.vy = 7;
+            gun.vy = 7;
         }
     };
     lever.remove = false;
@@ -483,5 +502,48 @@ function addLatamAssets() {
     movableAssets.push(bubbleItem);
     lootableAssets.push(bubbleItem);
     chest.loot.push(bubbleItem);
+
+    var latamCloudPosition = 18000;
+    var cloud =  createMemoryAsset(disketteFrames, latamCloudPosition, "latam-slider");
+
+    clouds.push(cloud);
+    world.addChild(cloud);
+
+    death = new PIXI.extras.MovieClip(deathIdleFrames);
+
+    death.animationSpeed = 0.4;
+    death.anchor.set(0.5);
+    death.scale.set(0.5 * -1, 0.5);
+    death.position.set(19000, calculateFloorYPosition(death) - death.height);
+    death.play();
+    death.lifePoints = 500;
+    setInterval(function () {
+        death.textures= deathAttackFrames;
+        death.animationSpeed = 0.15;
+        death.gotoAndPlay(0);
+        death.loop = false;
+        var bullet =  new Sprite(resources["./assets/png/Object/bullet.png"].texture);
+        bullet.anchor.set(0.5);
+        bullet.scale.set(0.15);
+        bullet.y = death.y + 25;
+        bullets.push(bullet);
+
+        bullet.scale.x = -0.15;
+        bullet.vx = -8;
+        bullet.x = death.x + 100;
+        bullet.source = "dragon";
+        setTimeout(function () {
+            world.addChild(bullet);
+        },400);
+        death.onComplete = function () {
+            death.animationSpeed = 0.4;
+            death.textures = deathIdleFrames;
+            death.loop = true;
+            death.play();
+        }
+    },3500);
+
+
+    world.addChild(death);
 
 }

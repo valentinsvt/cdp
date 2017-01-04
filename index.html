@@ -42,6 +42,13 @@
             <img src="./assets/png/photos/conquito4.jpg" height="100%" style="-webkit-transform: rotate(180deg)">
             <img src="./assets/png/photos/conquito5.jpg" height="100%">
         </div>
+        <div class="latam-slider slider">
+            <img src="./assets/png/photos/conquito1.jpg" height="100%" style="-webkit-transform: rotate(180deg)">
+            <img src="./assets/png/photos/conquito2.jpg" height="100%" style="-webkit-transform: rotate(180deg)">
+            <img src="./assets/png/photos/conquito3.jpg" height="100%" style="-webkit-transform: rotate(180deg)">
+            <img src="./assets/png/photos/conquito4.jpg" height="100%" style="-webkit-transform: rotate(180deg)">
+            <img src="./assets/png/photos/conquito5.jpg" height="100%">
+        </div>
     </div>
 </div>
 
@@ -63,6 +70,7 @@
     var screenHeight = contentDiv.height()-4;
     var renderer = autoDetectRenderer(screenWidth, screenHeight,{ transparent: true });
     var player;
+    var death;
     var bubble;
     var zombie;
     var idleFrames = [];
@@ -72,6 +80,8 @@
     var gunAttackingFrames = [];
     var zombieIdleFrames = [];
     var zombieDeadFrames = [];
+    var deathIdleFrames = [];
+    var deathAttackFrames = [];
     var greenDisketteFrames = [];
     var planeFrames = [];
     var disketteFrames = [];
@@ -105,6 +115,7 @@
     loadZombieAssets();
     loadDisketteAssets();
     loadPlaneAssets();
+    loadDeathAssets();
 
     loader.add("./assets/png/path/2.png")
         .add("./assets/png/path/5.png")
@@ -131,6 +142,7 @@
         .add("./assets/png/Object/gun.png")
         .add("./assets/png/Object/bullet.png")
         .add("./assets/png/Object/bubble.png")
+        .add("./assets/png/Object/bullet-2.png")
         .load(setup);
 
     function setup() {
@@ -163,6 +175,7 @@
         lootHitCollision();
         chestsCollision();
         actionableAssetsHitCollision();
+        bulletsHitCollision();
     }
 
     function updateFutbolmatchScrollPosition() {
@@ -170,7 +183,7 @@
             futbolMatchScroll.y += 7;
         }
         if(lever.active==true && sword.y < screenHeight - (pathTiles[0].height + 30)){
-                sword.y += 10;
+            sword.y += 10;
         }
     }
 
@@ -221,22 +234,23 @@
         bullets.map(function (bullet) {
             if(bullet.visible){
                 bullet.x += bullet.vx;
-            }
-            if(bullet.x > screenWidth + 100 || bullet.x < -100){
-                bullet.visible = false;
+                var globalPosition =  bullet.source == "dragon" ? world.toGlobal(bullet.position) : bullet.position;
+                if(globalPosition.x > screenWidth + 100 || globalPosition.x < -100){
+                    bullet.visible = false;
+                }
             }
         });
 
         movableAssets.map(function (asset) {
-           if(asset.vy != 0 || asset.vx != 0){
-               asset.y += asset.vy;
-               asset.x += asset.vx;
-               asset.vy += 0.4;
-               if(asset.y > asset.floorPosition) {
-                   asset.vy = 0;
-                   asset.vx = 0;
-               }
-           }
+            if(asset.vy != 0 || asset.vx != 0){
+                asset.y += asset.vy;
+                asset.x += asset.vx;
+                asset.vy += 0.4;
+                if(asset.y > asset.floorPosition) {
+                    asset.vy = 0;
+                    asset.vx = 0;
+                }
+            }
         });
     }
 
@@ -246,6 +260,7 @@
         loadDisketteAnimationFrames();
         loadAnimationFrames();
         loadZombieAnimationFrames();
+        loadDeathAnimationFrames();
         loadPlaneAnimationFrames();
         addPathTiles();
         addBushes();
@@ -307,9 +322,9 @@
         };
 
         left.release = function() {
-                player.vx = 0;
-                world.vx = 0;
-                idleAnimation();
+            player.vx = 0;
+            world.vx = 0;
+            idleAnimation();
         };
 
         right.press = function() {
@@ -320,9 +335,9 @@
             }
         };
         right.release = function() {
-                player.vx = 0;
-                world.vx = 0;
-                idleAnimation();
+            player.vx = 0;
+            world.vx = 0;
+            idleAnimation();
         };
 
         space.press = function() {
@@ -370,7 +385,7 @@
             player.textures = player.attackingFrames;
             player.state = "attacking";
             if(player.textures == gunAttackingFrames){
-                var bullet =  new Sprite(resources["./assets/png/Object/bullet.png"].texture);
+                var bullet =  new Sprite(resources["./assets/png/Object/bullet-2.png"].texture);
                 bullet.anchor.set(0.5);
                 bullet.scale.set(0.08);
                 bullet.y = player.y + player.height / 5;

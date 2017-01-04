@@ -59,7 +59,7 @@ function testConquitoZone(){
 }
 
 function testLatamZone(){
-    if(world.x < -14500 + player.x && world.x > -17500 + player.x) {
+    if(world.x < -14500 + player.x && world.x > -22500 + player.x) {
         if(!backgroundDiv.hasClass("latam")){
             backgroundDiv.addClass("latam").addClass("fadeIn").removeClass("fadeOut");
         }

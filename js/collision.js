@@ -142,3 +142,20 @@ function chestsCollision() {
         chests.splice(toDelete, 1);
     }
 }
+
+function bulletsHitCollision() {
+    bullets.map(function (bullet) {
+        if(bullet.visible){
+            if(bullet.source == "dragon" && hitTestRectangle(player, bullet, world)){
+                if(!bubble.visible){
+                    setTimeout(function () {
+                        bullet.visible = false;
+                        player.vx = -10;
+                    },150);
+                }else{
+                    bullet.visible = false;
+                }
+            }
+        }
+    });
+}
