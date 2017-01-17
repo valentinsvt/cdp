@@ -155,6 +155,14 @@ function bulletsHitCollision() {
                 }else{
                     bullet.visible = false;
                 }
+            }else{
+                if(bullet.source != "dragon" && hitTestRectangle(bullet, death, world)){
+                    death.lifePoints -= 20;
+                    bullet.visible = false;
+                    if(death.lifePoints < 0){
+                        death.vy = -5;
+                    }
+                }
             }
         }
     });

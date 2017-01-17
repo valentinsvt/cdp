@@ -206,7 +206,7 @@ function addFutbolmatchAssets(){
     world.addChild(sword);
 
     var message = new PIXI.Text(
-        "- Este es un feedback muy \n muy bueno, lorem\n ipsum dolor sit amen",
+        "- Aprendí muy rápido",
         {font: "18px sans-serif", fill: "black"}
     );
     message.x = 40;
@@ -214,35 +214,43 @@ function addFutbolmatchAssets(){
     futbolMatchScroll.addChild(message);
 
     message = new PIXI.Text(
-        "- Este es un feedback muy \n muy bueno, lorem\n ipsum dolor sit amen",
+        "- Pude ayudar desde el primer \n  momento en el equipo",
         {font: "18px sans-serif", fill: "black"}
     );
     message.x = 40;
-    message.y = 110;
+    message.y = 90;
     futbolMatchScroll.addChild(message);
 
     message = new PIXI.Text(
-        "- Este es un feedback muy \n muy bueno, lorem\n ipsum dolor sit amen",
+        "- Hablar más durante \n  el pairing\n",
         {font: "18px sans-serif", fill: "black"}
     );
     message.x = 40;
-    message.y = 190;
+    message.y = 170;
     futbolMatchScroll.addChild(message);
 
     message = new PIXI.Text(
-        "- Este es un feedback muy \n muy bueno, lorem\n ipsum dolor sit amen",
+        "- Hablar mas en las reuniones",
         {font: "18px sans-serif", fill: "black"}
     );
     message.x = 40;
-    message.y = 270;
+    message.y = 250;
     futbolMatchScroll.addChild(message);
 
     message = new PIXI.Text(
-        "- Este es un feedback muy \n muy bueno, lorem\n ipsum dolor sit amen",
+        "- Compartir mas el teclado",
         {font: "18px sans-serif", fill: "black"}
     );
     message.x = 40;
-    message.y = 350;
+    message.y = 310;
+    futbolMatchScroll.addChild(message);
+
+    message = new PIXI.Text(
+        "- Mejorar en el refactoring",
+        {font: "18px sans-serif", fill: "black"}
+    );
+    message.x = 40;
+    message.y = 370;
     futbolMatchScroll.addChild(message);
 
     world.addChild(futbolMatchScroll);
@@ -346,7 +354,7 @@ function addSeleneAssets() {
 }
 
 function addConQuitoAssets() {
-    var conquitoCloudPosition = 12800;
+    var conquitoCloudPosition = 13000;
     var cloud =  createMemoryAsset(disketteFrames, conquitoCloudPosition, "conquito-slider");
     var bulbasor = new Sprite(resources["./assets/png/Object/bulbasour.png"].texture);
     bulbasor.scale.set(0.1,0.1);
@@ -414,23 +422,40 @@ function addLatamAssets() {
     world.addChild(sword);
 
     var message = new PIXI.Text(
-        "- Este es un feedback muy \n muy bueno, lorem\n ipsum dolor sit amen",
+        "- Rápido aporte",
         {font: "18px sans-serif", fill: "black"}
     );
     message.x = 40;
-    message.y = 30;
+    message.y = 10;
     latamScroll.addChild(message);
 
     message = new PIXI.Text(
-        "- Este es un feedback muy \n muy bueno, lorem\n ipsum dolor sit amen",
+        "- Buena predisposición, \n" +
+        "  proactivo",
         {font: "18px sans-serif", fill: "black"}
     );
     message.x = 40;
-    message.y = 110;
+    message.y = 40;
     latamScroll.addChild(message);
 
     message = new PIXI.Text(
-        "- Este es un feedback muy \n muy bueno, lorem\n ipsum dolor sit amen",
+        "- Compartir mas sobre el \n  front end \n",
+        {font: "18px sans-serif", fill: "black"}
+    );
+    message.x = 40;
+    message.y = 90;
+    latamScroll.addChild(message);
+
+    message = new PIXI.Text(
+        "- Sabes un monton, tienes \n  que compartir",
+        {font: "18px sans-serif", fill: "black"}
+    );
+    message.x = 40;
+    message.y = 140;
+    latamScroll.addChild(message);
+
+    message = new PIXI.Text(
+        "- Adquirí contexto técnico y de\n   la cuenta muy rápido \n",
         {font: "18px sans-serif", fill: "black"}
     );
     message.x = 40;
@@ -438,19 +463,43 @@ function addLatamAssets() {
     latamScroll.addChild(message);
 
     message = new PIXI.Text(
-        "- Este es un feedback muy \n muy bueno, lorem\n ipsum dolor sit amen",
+        "- Muy bueno para detectar la\n   sobreingeniería",
         {font: "18px sans-serif", fill: "black"}
     );
     message.x = 40;
-    message.y = 270;
+    message.y = 240;
     latamScroll.addChild(message);
 
     message = new PIXI.Text(
-        "- Este es un feedback muy \n muy bueno, lorem\n ipsum dolor sit amen",
+        "- Mejorar skills de \n  comunicación\n",
         {font: "18px sans-serif", fill: "black"}
     );
     message.x = 40;
-    message.y = 350;
+    message.y = 290;
+    latamScroll.addChild(message);
+
+    message = new PIXI.Text(
+        "- Hablar mas en las reuniones",
+        {font: "18px sans-serif", fill: "black"}
+    );
+    message.x = 40;
+    message.y = 340;
+    latamScroll.addChild(message);
+
+    message = new PIXI.Text(
+        "- Muy directo, busco siempre\n  lo mas sencillo y práctico",
+        {font: "18px sans-serif", fill: "black"}
+    );
+    message.x = 40;
+    message.y = 370;
+    latamScroll.addChild(message);
+
+    message = new PIXI.Text(
+        "- Leer y entender el\n  protocolo",
+        {font: "18px sans-serif", fill: "black"}
+    );
+    message.x = 40;
+    message.y = 420;
     latamScroll.addChild(message);
 
     movableAssets.push(latamScroll);
@@ -483,6 +532,18 @@ function addLatamAssets() {
     chests.push(chest);
     chest.loot = [];
     world.addChild(chest);
+
+    var sign = new Sprite(resources["./assets/png/Object/Sign_1.png"].texture);
+    sign.y = screenHeight - pathTiles[0].height  - 80;
+    sign.x = 16830;
+    sign.scale.set(1.5);
+    world.addChild(sign);
+    var message = new PIXI.Text(
+        "Appsec \n   101",
+        {font: "25px sans-serif", fill: "white"}
+    );
+    message.position.set(16840, screenHeight - pathTiles[0].height  - 75);
+    world.addChild(message);
 
     var bubbleItem = new Sprite(resources["./assets/png/Object/bubble.png"].texture);
     bubbleItem.scale.set(0.03,0.03);
@@ -517,31 +578,35 @@ function addLatamAssets() {
     death.position.set(19000, calculateFloorYPosition(death) - death.height);
     death.play();
     death.lifePoints = 500;
+    death.vy = 0;
     setInterval(function () {
-        death.textures= deathAttackFrames;
-        death.animationSpeed = 0.15;
-        death.gotoAndPlay(0);
-        death.loop = false;
-        var bullet =  new Sprite(resources["./assets/png/Object/bullet.png"].texture);
-        bullet.anchor.set(0.5);
-        bullet.scale.set(0.15);
-        bullet.y = death.y + 25;
-        bullets.push(bullet);
+        if(death.vy==0){
+            death.textures= deathAttackFrames;
+            death.animationSpeed = 0.15;
+            death.gotoAndPlay(0);
+            death.loop = false;
+            var bullet =  new Sprite(resources["./assets/png/Object/bullet.png"].texture);
+            bullet.anchor.set(0.5);
+            bullet.scale.set(0.15);
+            bullet.y = death.y + 25;
+            bullets.push(bullet);
 
-        bullet.scale.x = -0.15;
-        bullet.vx = -8;
-        bullet.x = death.x + 100;
-        bullet.source = "dragon";
-        setTimeout(function () {
-            world.addChild(bullet);
-        },400);
-        death.onComplete = function () {
-            death.animationSpeed = 0.4;
-            death.textures = deathIdleFrames;
-            death.loop = true;
-            death.play();
+            bullet.scale.x = -0.15;
+            bullet.vx = -8;
+            bullet.x = death.x + 100;
+            bullet.source = "dragon";
+            setTimeout(function () {
+                world.addChild(bullet);
+            },400);
+            death.onComplete = function () {
+                death.animationSpeed = 0.4;
+                death.textures = deathIdleFrames;
+                death.loop = true;
+                death.play();
+            }
         }
-    },3500);
+
+    },1800);
 
 
     world.addChild(death);
