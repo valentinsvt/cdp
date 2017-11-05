@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Svt - CDP 2018</title>
+    <script src="js/pixi.min.js"></script>
+    <link rel="stylesheet" href="css/2year.css">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>
+    <link href="http://www.dota2.com/public/css/blog/play.css?v=b4223247" rel="stylesheet" type="text/css">
+    <script src="js/jquery.slides.min.js"></script>
+    <script src="js/environmentSetup.js"></script>
+    <script src="js/zones.js"></script>
+    <script src="js/collision.js"></script>
+    <script src="js/keyboard.js"></script>
+</head>
+<body>
+<div id="canvas"> </div>
+<div class="step blue-gradient">
+    <div class="info fromLeft grayFont">
+        <h1>Teach Lead training</h1>
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            Phasellus tincidunt orci in eros congue molestie.
+            Fusce et congue sapien. Cras vestibulum, diam sed dapibus dictum,
+            nibh est euismod neque, non fermentum nibh metus sed odio.
+            Mauris massa libero, tempor eget turpis vel, posuere scelerisque ipsum.
+        </p>
+    </div>
+    <div class="picture ">
+
+        <div class="skillCard" style="transform: rotate(-10deg);top:160px; left: 40px;">
+            <div class="skillIcon">
+                <img src="https://icon-icons.com/icons2/900/PNG/512/superhero_batman_hero_comic_icon-icons.com_69240.png">
+            </div>
+            <div class="skillName">Risk management</div>
+        </div>
+        <div class="skillCard" style="top:140px; left: 230px;">
+            <div class="skillIcon">
+                <img src="./assets/png/2year/building.png">
+            </div>
+            <div class="skillName">Architecture</div>
+        </div>
+        <div class="skillCard" style="transform: rotate(10deg);top:160px; left: 420px;">
+            <div class="skillIcon">
+                <img src="https://vignette.wikia.nocookie.net/leagueoflegends/images/b/b9/Mage_Large.png/revision/latest?cb=20140907112829">
+            </div>
+            <div class="skillName">Soft Skills</div>
+        </div>
+    </div>
+</div>
+<div class="step"></div>
+<div class="step"></div>
+<script type="text/javascript">
+    var Container = PIXI.Container,
+        autoDetectRenderer = PIXI.autoDetectRenderer,
+        loader = PIXI.loader,
+        resources = PIXI.loader.resources,
+        Sprite = PIXI.Sprite;
+    var stage = new Container();
+    var state;
+    var contentDiv =  $("#canvas");
+    var screenWidth= contentDiv.width();
+    var screenHeight = contentDiv.height()-4;
+    var renderer = autoDetectRenderer(screenWidth, screenHeight,{ transparent: true });
+    var player;
+    var idleFrames = [];
+    var walkingFrames = [];
+    var attackingFrames = [];
+    var movableAssets = [];
+    var bullets = [];
+    var jumpFrames = [];
+    var swordAttackingFrames = [];
+    var gunAttackingFrames = [];
+    var sword;
+    var xScale = 0.4;
+
+    var left = keyboard(37),
+        right = keyboard(39),
+        space = keyboard(32),
+        esc = keyboard(27),
+        ctrl = keyboard(17);
+    contentDiv.append(renderer.view);
+    loadPlayerAssets();
+    loader.add("./assets/png/Object/sword.png")
+        .add("./assets/png/Object/gun.png")
+        .load(setup);
+
+
+    function setup() {
+
+        setKeyboardFunctions();
+
+        setEnvironment();
+
+        renderer.render(stage);
+
+        state = play;
+
+    }
+
+    function gameLoop() {
+        requestAnimationFrame(gameLoop);
+        state();
+        renderer.render(stage);
+    }
+
+    function play() {
+        processCharacterMovement();
+    }
+    function processCharacterMovement() {
+        var hitsLimits =  contain(player, {x: screenWidth * 0.02, y: 10, width: screenWidth + player.width / 2, height: calculateFloorYPosition(player)});
+        if(hitsLimits==="right"){
+            player.vx=0;
+            world.vx = -5;
+        }
+
+        if( hitsLimits==="left"){
+            player.vx=0;
+            world.vx = 5;
+        }
+
+        if( hitsLimits==="bottom"){
+            player.vy=0;
+        }
+
+        if(world.vx < 1 && world.x * -1 + screenWidth > 10)
+            world.vx = 0;
+        if(world.vx > 1 && world.x > -10)
+            world.vx = 0;
+        if(player.vy != 0)
+            player.vy += 0.4;
+
+        player.x += player.vx;
+        player.y += player.vy;
+        world.x += world.vx;
+        if(!player.playing && player.vy > 0){
+            if(!right.isDown && !left.isDown) {
+                idleAnimation();
+            }else {
+                setWalkingAnimation();
+            }
+            player.loop = true;
+            player.play();
+        }
+
+        bullets.map(function (bullet) {
+            if(bullet.visible){
+                bullet.x += bullet.vx;
+                var globalPosition =  bullet.source == "dragon" ? world.toGlobal(bullet.position) : bullet.position;
+                if(globalPosition.x > screenWidth + 400 || globalPosition.x < -400){
+                    bullet.visible = false;
+                }
+            }
+        });
+
+        movableAssets.map(function (asset) {
+            if(asset.vy != 0 || asset.vx != 0){
+                asset.y += asset.vy;
+                asset.x += asset.vx;
+                asset.vy += 0.4;
+                if(asset.y > asset.floorPosition) {
+                    asset.vy = 0;
+                    asset.vx = 0;
+                }
+            }
+        });
+    }
+    function setEnvironment() {
+        world = new Container();
+        world.vx = 0;
+        loadAnimationFrames();
+
+        stage.addChild(world);
+
+        player = new PIXI.extras.MovieClip(idleFrames);
+
+        player.animationSpeed = 0.3;
+        player.play();
+        player.anchor.set(0.5);
+        player.scale.set(xScale);
+        player.vx = 0;
+        player.vy = 0;
+        player.attack = 0;
+        player.inventory = [];
+        player.attackingFrames = attackingFrames;
+        player.position.set(screenWidth * 0.2, calculateFloorYPosition(player) );
+
+        stage.addChild(player);
+    }
+    function walkAnimation(direction){
+        if(player.state != "walking"){
+            player.textures = walkingFrames;
+            player.scale.x = xScale * direction;
+            player.state = "walking";
+        }
+    }
+
+    function idleAnimation() {
+        if(player.state != "idle") {
+            player.textures = idleFrames;
+            player.state = "idle";
+        }
+    }
+
+    function attackAnimation() {
+        if(player.state != "attacking") {
+            player.textures = player.attackingFrames;
+            player.state = "attacking";
+            if(player.textures == gunAttackingFrames){
+                var bullet =  new Sprite(resources["./assets/png/Object/bullet-2.png"].texture);
+                bullet.anchor.set(0.5);
+                bullet.scale.set(0.08);
+                bullet.y = player.y + player.height / 5;
+                bullets.push(bullet);
+                if(player.facing == "right"){
+                    bullet.vx = 10;
+                    bullet.x = player.x + player.width / 2;
+                }else{
+                    bullet.scale.x = -0.08;
+                    bullet.vx = -10;
+                    bullet.x = player.x - player.width / 2;
+                }
+                stage.addChild(bullet);
+            }
+        }
+    }
+
+    function jumpAnimation() {
+        if(player.state != "jumping") {
+            player.textures = jumpFrames;
+            player.state = "jumping";
+            player.loop = false;
+        }
+    }
+
+    function setWalkingAnimation() {
+        if(player.vx > 0 || world.vx < 0) {
+            walkAnimation(1);
+        }else {
+            walkAnimation(-1);
+        }
+    }
+
+    function calculateFloorYPosition (sprite){
+        return screenHeight + sprite.height / 2;
+    }
+    function setKeyboardFunctions() {
+        left.press = function() {
+            if (!right.isDown) {
+                walkAnimation(-1);
+                player.vx = -5;
+                player.facing = "left";
+            }
+        };
+
+        left.release = function() {
+            player.vx = 0;
+            world.vx = 0;
+            idleAnimation();
+        };
+
+        right.press = function() {
+            if (!left.isDown) {
+                walkAnimation(1);
+                player.vx = 5;
+                player.facing = "right";
+            }
+        };
+        right.release = function() {
+            player.vx = 0;
+            world.vx = 0;
+            idleAnimation();
+        };
+
+        space.press = function() {
+            if(player.vy == 0) {
+                player.vy = -10;
+                jumpAnimation();
+            }
+        };
+
+        ctrl.press = function() {
+            attackAnimation();
+        };
+
+        ctrl.release = function() {
+            if(player.vx == 0 && world.vx == 0) {
+                idleAnimation();
+            }else{
+                setWalkingAnimation();
+            }
+        };
+
+        esc.release = function () {
+            $(".photoContainer").hide();
+            $(".slider").hide();
+        }
+    }
+    gameLoop();
+
+</script>
+</body>
+</html>

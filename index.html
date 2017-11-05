@@ -68,8 +68,8 @@
     var state;
     var contentDiv =  $("#content");
     var backgroundDiv =  $(".background");
-    var screenWidth= contentDiv.width();
-    var screenHeight = contentDiv.height()-4;
+    var screenWidth= $("body").width();
+    var screenHeight = $("body").height()-4;
     var renderer = autoDetectRenderer(screenWidth, screenHeight,{ transparent: true });
     var player;
     var death;
