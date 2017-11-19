@@ -14,6 +14,51 @@ function loadPlayerAssets(){
     }
 }
 
+function loadTeamAssets() {
+    for(var i = 1; i <= 6 ; i++) {
+        loader.add("./assets/png/2year/female1/Idle/Idle000" + i + ".png");
+        loader.add("./assets/png/2year/female1/Run/Run000" + i + ".png");
+        loader.add("./assets/png/2year/female2/Idle/Idle000" + i + ".png");
+        loader.add("./assets/png/2year/female2/Run/Run000" + i + ".png");
+        loader.add("./assets/png/2year/female3/Idle/Idle000" + i + ".png");
+        loader.add("./assets/png/2year/female3/Run/Run000" + i + ".png");
+        loader.add("./assets/png/2year/female4/Idle/Idle000" + i + ".png");
+        loader.add("./assets/png/2year/female4/Run/Run000" + i + ".png");
+        loader.add("./assets/png/2year/male1/Idle/Idle000" + i + ".png");
+        loader.add("./assets/png/2year/male1/Run/Run000" + i + ".png");
+        loader.add("./assets/png/2year/male2/Idle/Idle000" + i + ".png");
+        loader.add("./assets/png/2year/male2/Run/Run000" + i + ".png");
+        loader.add("./assets/png/2year/male3/Idle/Idle000" + i + ".png");
+        loader.add("./assets/png/2year/male3/Run/Run000" + i + ".png");
+        loader.add("./assets/png/2year/male4/Idle/Idle000" + i + ".png");
+        loader.add("./assets/png/2year/male4/Run/Run000" + i + ".png");
+        loader.add("./assets/png/2year/male5/Idle/Idle000" + i + ".png");
+        loader.add("./assets/png/2year/male5/Run/Run000" + i + ".png");
+    }
+}
+function loadTeamFrames() {
+    for(var i = 1; i <= 6 ; i++) {
+        teamFrames[0].push(PIXI.Texture.fromFrame("./assets/png/2year/female1/Idle/Idle000" + i + ".png"));
+        teamFrames[1].push(PIXI.Texture.fromFrame("./assets/png/2year/female1/Run/Run000" + i + ".png"));
+        teamFrames[2].push(PIXI.Texture.fromFrame("./assets/png/2year/female2/Idle/Idle000" + i + ".png"));
+        teamFrames[3].push(PIXI.Texture.fromFrame("./assets/png/2year/female2/Run/Run000" + i + ".png"));
+        teamFrames[4].push(PIXI.Texture.fromFrame("./assets/png/2year/female3/Idle/Idle000" + i + ".png"));
+        teamFrames[5].push(PIXI.Texture.fromFrame("./assets/png/2year/female3/Run/Run000" + i + ".png"));
+        teamFrames[6].push(PIXI.Texture.fromFrame("./assets/png/2year/female4/Idle/Idle000" + i + ".png"));
+        teamFrames[7].push(PIXI.Texture.fromFrame("./assets/png/2year/female4/Run/Run000" + i + ".png"));
+        teamFrames[8].push(PIXI.Texture.fromFrame("./assets/png/2year/male1/Idle/Idle000" + i + ".png"));
+        teamFrames[9].push(PIXI.Texture.fromFrame("./assets/png/2year/male1/Run/Run000" + i + ".png"));
+        teamFrames[10].push(PIXI.Texture.fromFrame("./assets/png/2year/male2/Idle/Idle000" + i + ".png"));
+        teamFrames[11].push(PIXI.Texture.fromFrame("./assets/png/2year/male2/Run/Run000" + i + ".png"));
+        teamFrames[12].push(PIXI.Texture.fromFrame("./assets/png/2year/male3/Idle/Idle000" + i + ".png"));
+        teamFrames[13].push(PIXI.Texture.fromFrame("./assets/png/2year/male3/Run/Run000" + i + ".png"));
+        teamFrames[14].push(PIXI.Texture.fromFrame("./assets/png/2year/male4/Idle/Idle000" + i + ".png"));
+        teamFrames[15].push(PIXI.Texture.fromFrame("./assets/png/2year/male4/Run/Run000" + i + ".png"));
+        teamFrames[16].push(PIXI.Texture.fromFrame("./assets/png/2year/male5/Idle/Idle000" + i + ".png"));
+        teamFrames[17].push(PIXI.Texture.fromFrame("./assets/png/2year/male5/Run/Run000" + i + ".png"));
+    }
+}
+
 function loadZombieAssets() {
     for(var i = 1; i <= 15 ; i++) {
         loader.add("./assets/png/zombie/Idle (" + i + ").png");
@@ -38,9 +83,15 @@ function loadDisketteAssets() {
         loader.add("./assets/png/dk_green/diskette_" + i + ".png");
     }
 }
-function loadPlaneAssets() {
-    for(var i = 0; i < 19 ; i++) {
-        loader.add("./assets/png/plane/plane_" + i + ".png");
+function loadTeleportAssets() {
+    for(var i = 1; i < 21 ; i++) {
+        loader.add("./assets/png/2year/teleport/white/" + i + ".png");
+    }
+}
+
+function loadTeleportFrames() {
+    for(var i = 1; i < 21 ; i++) {
+        whiteTeleportFrames.push(PIXI.Texture.fromFrame("./assets/png/2year/teleport/white/" + i + ".png"));
     }
 }
 

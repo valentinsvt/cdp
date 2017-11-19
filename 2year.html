@@ -16,7 +16,10 @@
     <script src="js/keyboard.js"></script>
 </head>
 <body>
-<div id="canvas"> </div>
+<div id="canvas"></div>
+<div id="memory">
+    <img src="assets/png/photos/futbolmatch2.png">
+</div>
 <div class="step blue-gradient">
     <div class="info fromLeft grayFont">
         <h1>Teach Lead training</h1>
@@ -50,8 +53,57 @@
         </div>
     </div>
 </div>
-<div class="step"></div>
-<div class="step"></div>
+<div class="step ">
+    <div class="info fromLeft  ">
+        <h1>Threat modeling</h1>
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            Phasellus tincidunt orci in eros congue molestie.
+            Fusce et congue sapien. Cras vestibulum, diam sed dapibus dictum,
+            nibh est euismod neque, non fermentum nibh metus sed odio.
+            Mauris massa libero, tempor eget turpis vel, posuere scelerisque ipsum.
+        </p>
+    </div>
+    <div class="picture vine-gradient">
+        <img src="https://mir-s3-cdn-cf.behance.net/project_modules/disp/cbb11c11608153.560fa6ea41721.png"
+             height="400px" style="margin: 120px auto auto;">
+    </div>
+    </div>
+<div class="step bg-latam" style="position: relative">
+    <div class="portrait-container">
+        <div class="portrait">
+            <img src="assets/png/photos/latam3.jpg">
+        </div>
+        <div class="portrait">
+            <img src="assets/png/photos/latam2.png">
+        </div>
+        <div class="portrait">
+            <img src="assets/png/photos/latam1.jpg">
+        </div>
+        <div class="portrait">
+            <img src="assets/png/photos/latam3.jpg">
+        </div>
+        <div class="portrait">
+            <img src="assets/png/photos/latam3.jpg">
+        </div>
+        <div class="portrait">
+            <img src="assets/png/photos/latam3.jpg">
+        </div>
+        <div class="portrait">
+            <img src="assets/png/photos/latam3.jpg">
+        </div>
+        <div class="portrait">
+            <img src="assets/png/photos/latam3.jpg">
+        </div>
+        <div class="portrait">
+            <img src="assets/png/photos/latam3.jpg">
+        </div>
+        <div class="portrait">
+            <img src="assets/png/photos/latam3.jpg">
+        </div>
+    </div>
+    <div class="arrow"></div>
+</div>
 <script type="text/javascript">
     var Container = PIXI.Container,
         autoDetectRenderer = PIXI.autoDetectRenderer,
@@ -60,29 +112,39 @@
         Sprite = PIXI.Sprite;
     var stage = new Container();
     var state;
-    var contentDiv =  $("#canvas");
-    var screenWidth= contentDiv.width();
-    var screenHeight = contentDiv.height()-4;
-    var renderer = autoDetectRenderer(screenWidth, screenHeight,{ transparent: true });
+    var contentDiv = $("#canvas");
+    var screenWidth = contentDiv.width();
+    var screenHeight = contentDiv.height() - 4;
+    var renderer = autoDetectRenderer(screenWidth, screenHeight, {transparent: true});
     var player;
     var idleFrames = [];
     var walkingFrames = [];
     var attackingFrames = [];
-    var movableAssets = [];
     var bullets = [];
     var jumpFrames = [];
-    var swordAttackingFrames = [];
     var gunAttackingFrames = [];
-    var sword;
-    var xScale = 0.4;
+    var whiteTeleportFrames = [];
+    var swordAttackingFrames = [];
 
+    /*Team*/
+    var teamFrames = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []];
+    var teamPositions = [[180, 100],[450, 100],[720, 100],[990,100],[1260,100],[180,300],[450,300],[720,300],[990,300]];
+    var team = [];
+
+    var teleportFrameCount = 0;
+    var teleport;
+    var xScale = 0.30;
     var left = keyboard(37),
         right = keyboard(39),
         space = keyboard(32),
         esc = keyboard(27),
-        ctrl = keyboard(17);
+        ctrl = keyboard(17),
+        xkey = keyboard(88),
+        ckey = keyboard(67);
     contentDiv.append(renderer.view);
     loadPlayerAssets();
+    loadTeleportAssets();
+    loadTeamAssets();
     loader.add("./assets/png/Object/sword.png")
         .add("./assets/png/Object/gun.png")
         .load(setup);
@@ -109,72 +171,65 @@
     function play() {
         processCharacterMovement();
     }
+
     function processCharacterMovement() {
-        var hitsLimits =  contain(player, {x: screenWidth * 0.02, y: 10, width: screenWidth + player.width / 2, height: calculateFloorYPosition(player)});
-        if(hitsLimits==="right"){
-            player.vx=0;
+        let hitsLimits = contain(player, {
+            x: screenWidth * 0.02,
+            y: 10,
+            width: screenWidth + player.width / 2,
+            height: calculateFloorYPosition(player)
+        });
+        if (hitsLimits === "right") {
+            player.vx = 0;
             world.vx = -5;
         }
 
-        if( hitsLimits==="left"){
-            player.vx=0;
+        if (hitsLimits === "left") {
+            player.vx = 0;
             world.vx = 5;
         }
 
-        if( hitsLimits==="bottom"){
-            player.vy=0;
+        if (hitsLimits === "bottom" && player.state !== "jumping") {
+            player.vy = 0;
         }
 
-        if(world.vx < 1 && world.x * -1 + screenWidth > 10)
+        if (world.vx < 1 && world.x * -1 + screenWidth > 10)
             world.vx = 0;
-        if(world.vx > 1 && world.x > -10)
+        if (world.vx > 1 && world.x > -10)
             world.vx = 0;
-        if(player.vy != 0)
+        if (player.vy !== 0)
             player.vy += 0.4;
 
         player.x += player.vx;
         player.y += player.vy;
         world.x += world.vx;
-        if(!player.playing && player.vy > 0){
-            if(!right.isDown && !left.isDown) {
+        if (!player.playing && player.vy > 0) {
+            if (!right.isDown && !left.isDown) {
                 idleAnimation();
-            }else {
+            } else {
                 setWalkingAnimation();
             }
             player.loop = true;
             player.play();
         }
-
-        bullets.map(function (bullet) {
-            if(bullet.visible){
-                bullet.x += bullet.vx;
-                var globalPosition =  bullet.source == "dragon" ? world.toGlobal(bullet.position) : bullet.position;
-                if(globalPosition.x > screenWidth + 400 || globalPosition.x < -400){
-                    bullet.visible = false;
-                }
-            }
-        });
-
-        movableAssets.map(function (asset) {
-            if(asset.vy != 0 || asset.vx != 0){
-                asset.y += asset.vy;
-                asset.x += asset.vx;
-                asset.vy += 0.4;
-                if(asset.y > asset.floorPosition) {
-                    asset.vy = 0;
-                    asset.vx = 0;
-                }
-            }
-        });
     }
+
     function setEnvironment() {
         world = new Container();
         world.vx = 0;
         loadAnimationFrames();
-
+        loadTeleportFrames();
+        loadTeamFrames();
         stage.addChild(world);
 
-        player = new PIXI.extras.MovieClip(idleFrames);
+        player = new PIXI.extras.AnimatedSprite(idleFrames);
+        teleport = new PIXI.extras.AnimatedSprite(whiteTeleportFrames);
+
+        teleport.animationSpeed = 0.15;
+        teleport.play();
+        teleport.anchor.set(0.5);
+        teleport.scale.set(1);
+        teleport.loop = false;
 
         player.animationSpeed = 0.3;
         player.play();
@@ -185,12 +240,54 @@
         player.attack = 0;
         player.inventory = [];
         player.attackingFrames = attackingFrames;
-        player.position.set(screenWidth * 0.2, calculateFloorYPosition(player) );
+        player.position.set(300, 350);
+        for(i=0; i< 9; i++){
+            let teamMember = new PIXI.extras.AnimatedSprite(teamFrames[i*2]);
+            teamMember.animationSpeed = 0.12;
+            teamMember.play();
+            teamMember.anchor.set(0.5);
+            teamMember.scale.set(xScale);
+            teamMember.position.set(teamPositions[i][0],teamPositions[i][1]);
+            teamMember.runFrames = teamFrames[i + i*2 + 1];
+            team.push(teamMember);
+            stage.addChild(teamMember);
 
-        stage.addChild(player);
+        }
     }
-    function walkAnimation(direction){
-        if(player.state != "walking"){
+
+    function spawnCharacter() {
+        try {
+            stage.getChildIndex(player)
+            stage.addChild(teleport);
+            teleport.position.set(player.position.x, player.position.y);
+            teleport.onComplete = () => {
+                stage.removeChild(teleport);
+                stage.removeChild(player);
+            };
+            teleport.onFrameChange = null;
+            teleport.gotoAndPlay(0);
+
+        } catch (error) {
+            teleportFrameCount = 0;
+            teleport.position.set(300, 350);
+            stage.addChild(teleport);
+            teleport.onFrameChange = function () {
+                teleportFrameCount++;
+                if (teleportFrameCount > teleport.totalFrames - 5) {
+                    player.position.set(300, 350);
+                    player.scale.set(xScale - 0.05 * (teleport.totalFrames - teleportFrameCount));
+                    stage.addChild(player);
+                }
+            };
+            teleport.onComplete = () => {
+                stage.removeChild(teleport);
+            };
+            teleport.gotoAndPlay(0);
+        }
+    }
+
+    function walkAnimation(direction) {
+        if (player.state !== "walking") {
             player.textures = walkingFrames;
             player.scale.x = xScale * direction;
             player.state = "walking";
@@ -198,26 +295,26 @@
     }
 
     function idleAnimation() {
-        if(player.state != "idle") {
+        if (player.state !== "idle") {
             player.textures = idleFrames;
             player.state = "idle";
         }
     }
 
     function attackAnimation() {
-        if(player.state != "attacking") {
+        if (player.state !== "attacking") {
             player.textures = player.attackingFrames;
             player.state = "attacking";
-            if(player.textures == gunAttackingFrames){
-                var bullet =  new Sprite(resources["./assets/png/Object/bullet-2.png"].texture);
+            if (player.textures === gunAttackingFrames) {
+                var bullet = new Sprite(resources["./assets/png/Object/bullet-2.png"].texture);
                 bullet.anchor.set(0.5);
                 bullet.scale.set(0.08);
                 bullet.y = player.y + player.height / 5;
                 bullets.push(bullet);
-                if(player.facing == "right"){
+                if (player.facing === "right") {
                     bullet.vx = 10;
                     bullet.x = player.x + player.width / 2;
-                }else{
+                } else {
                     bullet.scale.x = -0.08;
                     bullet.vx = -10;
                     bullet.x = player.x - player.width / 2;
@@ -228,7 +325,7 @@
     }
 
     function jumpAnimation() {
-        if(player.state != "jumping") {
+        if (player.state !== "jumping") {
             player.textures = jumpFrames;
             player.state = "jumping";
             player.loop = false;
@@ -236,18 +333,19 @@
     }
 
     function setWalkingAnimation() {
-        if(player.vx > 0 || world.vx < 0) {
+        if (player.vx > 0 || world.vx < 0) {
             walkAnimation(1);
-        }else {
+        } else {
             walkAnimation(-1);
         }
     }
 
-    function calculateFloorYPosition (sprite){
-        return screenHeight + sprite.height / 2;
+    function calculateFloorYPosition(sprite) {
+        return screenHeight + sprite.height / 2 ;
     }
+
     function setKeyboardFunctions() {
-        left.press = function() {
+        left.press = function () {
             if (!right.isDown) {
                 walkAnimation(-1);
                 player.vx = -5;
@@ -255,40 +353,40 @@
             }
         };
 
-        left.release = function() {
+        left.release = function () {
             player.vx = 0;
             world.vx = 0;
             idleAnimation();
         };
 
-        right.press = function() {
+        right.press = function () {
             if (!left.isDown) {
                 walkAnimation(1);
                 player.vx = 5;
                 player.facing = "right";
             }
         };
-        right.release = function() {
+        right.release = function () {
             player.vx = 0;
             world.vx = 0;
             idleAnimation();
         };
 
-        space.press = function() {
-            if(player.vy == 0) {
-                player.vy = -10;
+        space.press = function () {
+            if (player.vy === 0) {
+                player.vy = -12;
                 jumpAnimation();
             }
         };
 
-        ctrl.press = function() {
+        ctrl.press = function () {
             attackAnimation();
         };
 
-        ctrl.release = function() {
-            if(player.vx == 0 && world.vx == 0) {
+        ctrl.release = function () {
+            if (player.vx === 0 && world.vx === 0) {
                 idleAnimation();
-            }else{
+            } else {
                 setWalkingAnimation();
             }
         };
@@ -296,8 +394,21 @@
         esc.release = function () {
             $(".photoContainer").hide();
             $(".slider").hide();
+        };
+
+        xkey.release = function () {
+            spawnCharacter();
+        };
+
+        ckey.release = function () {
+            $("#memory").toggle();
+            $("#memory").css({
+                bottom: screenHeight - player.position.y + player.height / 2 + 30,
+                left: player.position.x - $("#memory").children()[0].width / 2
+            });
         }
     }
+
     gameLoop();
 
 </script>
