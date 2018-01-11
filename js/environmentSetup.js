@@ -24,6 +24,8 @@ function loadTeamAssets() {
         loader.add("./assets/png/2year/female3/Run/Run000" + i + ".png");
         loader.add("./assets/png/2year/female4/Idle/Idle000" + i + ".png");
         loader.add("./assets/png/2year/female4/Run/Run000" + i + ".png");
+        loader.add("./assets/png/2year/female5/Idle/Idle000" + i + ".png");
+        loader.add("./assets/png/2year/female5/Run/Run000" + i + ".png");
         loader.add("./assets/png/2year/male1/Idle/Idle000" + i + ".png");
         loader.add("./assets/png/2year/male1/Run/Run000" + i + ".png");
         loader.add("./assets/png/2year/male2/Idle/Idle000" + i + ".png");
@@ -46,16 +48,18 @@ function loadTeamFrames() {
         teamFrames[5].push(PIXI.Texture.fromFrame("./assets/png/2year/female3/Run/Run000" + i + ".png"));
         teamFrames[6].push(PIXI.Texture.fromFrame("./assets/png/2year/female4/Idle/Idle000" + i + ".png"));
         teamFrames[7].push(PIXI.Texture.fromFrame("./assets/png/2year/female4/Run/Run000" + i + ".png"));
-        teamFrames[8].push(PIXI.Texture.fromFrame("./assets/png/2year/male1/Idle/Idle000" + i + ".png"));
-        teamFrames[9].push(PIXI.Texture.fromFrame("./assets/png/2year/male1/Run/Run000" + i + ".png"));
-        teamFrames[10].push(PIXI.Texture.fromFrame("./assets/png/2year/male2/Idle/Idle000" + i + ".png"));
-        teamFrames[11].push(PIXI.Texture.fromFrame("./assets/png/2year/male2/Run/Run000" + i + ".png"));
-        teamFrames[12].push(PIXI.Texture.fromFrame("./assets/png/2year/male3/Idle/Idle000" + i + ".png"));
-        teamFrames[13].push(PIXI.Texture.fromFrame("./assets/png/2year/male3/Run/Run000" + i + ".png"));
-        teamFrames[14].push(PIXI.Texture.fromFrame("./assets/png/2year/male4/Idle/Idle000" + i + ".png"));
-        teamFrames[15].push(PIXI.Texture.fromFrame("./assets/png/2year/male4/Run/Run000" + i + ".png"));
-        teamFrames[16].push(PIXI.Texture.fromFrame("./assets/png/2year/male5/Idle/Idle000" + i + ".png"));
-        teamFrames[17].push(PIXI.Texture.fromFrame("./assets/png/2year/male5/Run/Run000" + i + ".png"));
+        teamFrames[8].push(PIXI.Texture.fromFrame("./assets/png/2year/female5/Idle/Idle000" + i + ".png"));
+        teamFrames[9].push(PIXI.Texture.fromFrame("./assets/png/2year/female5/Run/Run000" + i + ".png"));
+        teamFrames[10].push(PIXI.Texture.fromFrame("./assets/png/2year/male1/Idle/Idle000" + i + ".png"));
+        teamFrames[11].push(PIXI.Texture.fromFrame("./assets/png/2year/male1/Run/Run000" + i + ".png"));
+        teamFrames[12].push(PIXI.Texture.fromFrame("./assets/png/2year/male2/Idle/Idle000" + i + ".png"));
+        teamFrames[13].push(PIXI.Texture.fromFrame("./assets/png/2year/male2/Run/Run000" + i + ".png"));
+        teamFrames[14].push(PIXI.Texture.fromFrame("./assets/png/2year/male3/Idle/Idle000" + i + ".png"));
+        teamFrames[15].push(PIXI.Texture.fromFrame("./assets/png/2year/male3/Run/Run000" + i + ".png"));
+        teamFrames[16].push(PIXI.Texture.fromFrame("./assets/png/2year/male4/Idle/Idle000" + i + ".png"));
+        teamFrames[17].push(PIXI.Texture.fromFrame("./assets/png/2year/male4/Run/Run000" + i + ".png"));
+        teamFrames[18].push(PIXI.Texture.fromFrame("./assets/png/2year/male5/Idle/Idle000" + i + ".png"));
+        teamFrames[19].push(PIXI.Texture.fromFrame("./assets/png/2year/male5/Run/Run000" + i + ".png"));
     }
 }
 
@@ -92,6 +96,17 @@ function loadTeleportAssets() {
 function loadTeleportFrames() {
     for(var i = 1; i < 21 ; i++) {
         whiteTeleportFrames.push(PIXI.Texture.fromFrame("./assets/png/2year/teleport/white/" + i + ".png"));
+    }
+}
+
+function loadSmokeAssets() {
+    for(var i = 1; i < 15 ; i++) {
+        loader.add("./assets/png/2year/magic_smoke/magic_smoke000" + i + ".png");
+    }
+}
+function loadSmokeFrames() {
+    for(var i = 1; i < 15 ; i++) {
+        smokeFrames.push(PIXI.Texture.fromFrame("./assets/png/2year/magic_smoke/magic_smoke000" + i + ".png"));
     }
 }
 

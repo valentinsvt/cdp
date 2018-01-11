@@ -1,0 +1,8 @@
+<TextureAtlas imagePath="run.png">
+	<SubTexture name="Run0001.png" x="0" y="1619" width="347" height="397"/>
+	<SubTexture name="Run0002.png" x="0" y="406" width="358" height="405"/>
+	<SubTexture name="Run0003.png" x="0" y="813" width="355" height="401"/>
+	<SubTexture name="Run0004.png" x="349" y="1619" width="347" height="397"/>
+	<SubTexture name="Run0005.png" x="0" y="0" width="358" height="404"/>
+	<SubTexture name="Run0006.png" x="0" y="1216" width="355" height="401"/>
+</TextureAtlas>

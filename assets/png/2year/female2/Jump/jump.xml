@@ -1,0 +1,10 @@
+<TextureAtlas imagePath="jump.png">
+	<SubTexture name="Jump0001.png" x="627" y="0" width="625" height="1125"/>
+	<SubTexture name="Jump0002.png" x="627" y="2254" width="625" height="1125"/>
+	<SubTexture name="Jump0003.png" x="627" y="1127" width="625" height="1125"/>
+	<SubTexture name="Jump0004.png" x="1254" y="0" width="625" height="1125"/>
+	<SubTexture name="Jump0005.png" x="0" y="2254" width="625" height="1125"/>
+	<SubTexture name="Jump0006.png" x="0" y="1127" width="625" height="1125"/>
+	<SubTexture name="Jump0007.png" x="0" y="0" width="625" height="1125"/>
+	<SubTexture name="Jump0008.png" x="0" y="0" width="625" height="1125"/>
+</TextureAtlas>

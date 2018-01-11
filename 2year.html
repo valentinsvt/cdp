@@ -20,6 +20,7 @@
 <div id="memory">
     <img src="assets/png/photos/futbolmatch2.png">
 </div>
+<div class="containter">
 <div class="step blue-gradient">
     <div class="info fromLeft grayFont">
         <h1>Teach Lead training</h1>
@@ -72,37 +73,43 @@
 <div class="step bg-latam" style="position: relative">
     <div class="portrait-container">
         <div class="portrait">
-            <img src="assets/png/photos/latam3.jpg">
+            <img src="assets/png/2year/equipo/Denisse1.png" width="100%" height="100%">
         </div>
         <div class="portrait">
-            <img src="assets/png/photos/latam2.png">
+            <img src="assets/png/2year/equipo/Daniela.jpg" width="100%" height="100%">
         </div>
         <div class="portrait">
-            <img src="assets/png/photos/latam1.jpg">
+            <img src="assets/png/2year/equipo/Jenny.jpg" width="100%" height="100%">
         </div>
         <div class="portrait">
-            <img src="assets/png/photos/latam3.jpg">
+            <img src="assets/png/2year/equipo/MAYRILIS_F.jpg" width="100%" height="100%">
         </div>
         <div class="portrait">
-            <img src="assets/png/photos/latam3.jpg">
+            <img src="assets/png/2year/equipo/foto_credencial.jpg" width="100%" height="100%">
         </div>
         <div class="portrait">
-            <img src="assets/png/photos/latam3.jpg">
+            <img src="assets/png/2year/equipo/Byron2.png" width="100%" height="100%">
         </div>
         <div class="portrait">
-            <img src="assets/png/photos/latam3.jpg">
+            <img src="assets/png/2year/equipo/freddy.png" width="100%" height="100%">
         </div>
         <div class="portrait">
-            <img src="assets/png/photos/latam3.jpg">
+            <img src="assets/png/2year/equipo/hector.png" width="100%" height="100%">
         </div>
         <div class="portrait">
-            <img src="assets/png/photos/latam3.jpg">
+            <img src="assets/png/2year/equipo/ManuelMedina.png" width="100%" height="100%">
         </div>
         <div class="portrait">
-            <img src="assets/png/photos/latam3.jpg">
+            <img src="assets/png/2year/equipo/sebas.png" width="100%" height="100%">
         </div>
     </div>
     <div class="arrow"></div>
+</div>
+<div class="step" style="position: relative">
+    <div class="arrow"></div>
+</div>
+<div class="step" style="position: relative">
+</div>
 </div>
 <script type="text/javascript">
     var Container = PIXI.Container,
@@ -124,15 +131,19 @@
     var jumpFrames = [];
     var gunAttackingFrames = [];
     var whiteTeleportFrames = [];
+    var smokeFrames = [];
     var swordAttackingFrames = [];
+    var scrollCount = 1;
 
     /*Team*/
-    var teamFrames = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []];
-    var teamPositions = [[180, 100],[450, 100],[720, 100],[990,100],[1260,100],[180,300],[450,300],[720,300],[990,300]];
+    var teamFrames = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []];
+    var teamPositions = [[180, 100],[450, 100],[720, 100],[990,100],[1260,100],[180,300],[450,300],[720,300],[990,300], [1260,300]];
     var team = [];
 
     var teleportFrameCount = 0;
     var teleport;
+    var smoke;
+    var plane;
     var xScale = 0.30;
     var left = keyboard(37),
         right = keyboard(39),
@@ -140,14 +151,59 @@
         esc = keyboard(27),
         ctrl = keyboard(17),
         xkey = keyboard(88),
+        vkey = keyboard(86),
+        qkey = keyboard(81),
+        akey = keyboard(65),
         ckey = keyboard(67);
     contentDiv.append(renderer.view);
     loadPlayerAssets();
     loadTeleportAssets();
+    loadSmokeAssets();
     loadTeamAssets();
     loader.add("./assets/png/Object/sword.png")
         .add("./assets/png/Object/gun.png")
+        .add("./assets/png/2year/equipo/plane.png")
         .load(setup);
+    let fourText = new PIXI.Text('4',{fontFamily : 'Arial', fontSize: 600, fill : 0x212C7E, align : 'center'});
+    fourText.x = screenWidth / 2 - 150;
+    fourText.y = screenHeight - 800;
+
+    var buildAnimation = {
+        target: {x: screenWidth / 2, y: screenHeight - 200},
+        done: false,
+        completed: [],
+        result: fourText,
+        postAnimation: () => {
+            setTimeout(() => {
+                team.map((member) => {
+                    member.x = member.standByPosition.x
+                });
+            },2000);
+        },
+        preAnimation: () => {
+
+        }
+    };
+
+    var planeAnimation = {
+        target: {x: screenWidth / 2, y: screenHeight - 200},
+        done: false,
+        completed: [],
+        result: plane,
+        postAnimation: () => {
+            setTimeout(() => {
+                team.map((member) => {
+                    member.x = member.standByPosition.x
+                });
+            },2000);
+        },
+        preAnimation: () => {
+            stage.removeChild(fourText);
+        }
+    };
+
+    var animations = [buildAnimation, planeAnimation];
+    var animation = null;
 
 
     function setup() {
@@ -173,6 +229,67 @@
     }
 
     function processCharacterMovement() {
+
+        team.map((member, index) => {
+            try{
+                if(member.vy !== 0){
+                    stage.getChildIndex(member);
+                    if(member.y < calculateFloorYPosition(member) - member.height){
+                        member.y += member.vy;
+                        if(index < 5){
+                            member.x+=1.8;
+                        }
+                    }else{
+                        member.y = calculateFloorYPosition(member)  - member.height;
+                        member.vy = 0;
+                        member.standByPosition = { x: member.x, y: member.y };
+                    }
+                }
+            }catch (error){}
+
+        });
+        if( animation !== null){
+            animation.preAnimation();
+            team.map((member) => {
+                if(animation.completed.indexOf(member) === -1) {
+                    if (member.x > animation.target.x) {
+                        member.x -= 5;
+                        if (member.x < animation.target.x) {
+                            member.x = animation.target.x;
+                        }
+                        member.scale.x = xScale * -1;
+                    }
+                    if (member.x < animation.target.x) {
+                        member.x += 5;
+                        if (member.x > animation.target.x) {
+                            member.x = animation.target.x;
+                        }
+                        member.scale.x = xScale;
+                    }
+                    if (member.x === animation.target.x) {
+                        animation.completed.push(member);
+                    }
+                }
+            });
+            if(animation.completed.length === 10){
+                animation.done = true;
+                stage.addChild(smoke);
+                smoke.gotoAndPlay(0);
+                smoke.x=animation.target.x;
+                smoke.y=animation.target.y - smoke.height / 3;
+                smoke.scale.set(3);
+                smoke.onComplete = () => {
+                    stage.removeChild(smoke);
+                };
+                stage.addChild(animation.result);
+
+            }
+            if(animation.done){
+                animation.postAnimation();
+                animation = null;
+            }
+        }
+
         let hitsLimits = contain(player, {
             x: screenWidth * 0.02,
             y: 10,
@@ -219,10 +336,10 @@
         world.vx = 0;
         loadAnimationFrames();
         loadTeleportFrames();
+        loadSmokeFrames();
         loadTeamFrames();
         stage.addChild(world);
 
-        player = new PIXI.extras.AnimatedSprite(idleFrames);
         teleport = new PIXI.extras.AnimatedSprite(whiteTeleportFrames);
 
         teleport.animationSpeed = 0.15;
@@ -231,6 +348,21 @@
         teleport.scale.set(1);
         teleport.loop = false;
 
+        smoke = new PIXI.extras.AnimatedSprite(smokeFrames);
+        smoke.animationSpeed = 0.1;
+        smoke.anchor.set(0.5);
+        smoke.scale.set(1);
+        smoke.loop = false;
+
+        plane = new PIXI.extras.AnimatedSprite([PIXI.Texture.fromFrame("./assets/png/2year/equipo/plane.png")]);
+        plane.anchor.set(0.5);
+        plane.scale.set(0.3);
+        plane.loop = false;
+        plane.position.set(screenWidth /2, 350);
+        planeAnimation.result = plane;
+
+
+        player = new PIXI.extras.AnimatedSprite(idleFrames);
         player.animationSpeed = 0.3;
         player.play();
         player.anchor.set(0.5);
@@ -241,7 +373,7 @@
         player.inventory = [];
         player.attackingFrames = attackingFrames;
         player.position.set(300, 350);
-        for(i=0; i< 9; i++){
+        for(i=0; i< 10; i++){
             let teamMember = new PIXI.extras.AnimatedSprite(teamFrames[i*2]);
             teamMember.animationSpeed = 0.12;
             teamMember.play();
@@ -249,15 +381,14 @@
             teamMember.scale.set(xScale);
             teamMember.position.set(teamPositions[i][0],teamPositions[i][1]);
             teamMember.runFrames = teamFrames[i + i*2 + 1];
+            teamMember.vy = 10;
             team.push(teamMember);
-            stage.addChild(teamMember);
-
         }
     }
 
     function spawnCharacter() {
         try {
-            stage.getChildIndex(player)
+            stage.getChildIndex(player);
             stage.addChild(teleport);
             teleport.position.set(player.position.x, player.position.y);
             teleport.onComplete = () => {
@@ -269,12 +400,12 @@
 
         } catch (error) {
             teleportFrameCount = 0;
-            teleport.position.set(300, 350);
+            teleport.position.set(300, screenHeight - 100);
             stage.addChild(teleport);
             teleport.onFrameChange = function () {
                 teleportFrameCount++;
                 if (teleportFrameCount > teleport.totalFrames - 5) {
-                    player.position.set(300, 350);
+                    player.position.set(300, screenHeight);
                     player.scale.set(xScale - 0.05 * (teleport.totalFrames - teleportFrameCount));
                     stage.addChild(player);
                 }
@@ -400,12 +531,28 @@
             spawnCharacter();
         };
 
+        vkey.release = function () {
+            for(i=0; i< 10; i++){
+                stage.addChild(team[i]);
+                team[i].vy = 10;
+            }
+        };
+
         ckey.release = function () {
             $("#memory").toggle();
             $("#memory").css({
                 bottom: screenHeight - player.position.y + player.height / 2 + 30,
                 left: player.position.x - $("#memory").children()[0].width / 2
             });
+        };
+        qkey.release = function () {
+            window.scrollTo(0,(screenHeight + 5) * scrollCount);
+            scrollCount ++ ;
+        };
+        akey.release = () => {
+            if(animations.length > 0){
+                animation = animations.splice(0,1)[0];
+            }
         }
     }
 
